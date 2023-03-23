@@ -33,8 +33,8 @@ module e203_exu_wbck(
   // The ALU Write-Back Interface
   input  alu_wbck_i_valid, // Handshake valid
   output alu_wbck_i_ready, // Handshake ready
-  input  [`E203_XLEN-1:0] alu_wbck_i_wdat,
-  input  [`E203_RFIDX_WIDTH-1:0] alu_wbck_i_rdidx,
+  input  [`E203_XLEN-1:0] alu_wbck_i_wdat,                                                   // 写回的数据值
+  input  [`E203_RFIDX_WIDTH-1:0] alu_wbck_i_rdidx,                                           // 写回的寄存器索引值
   // If ALU have error, it will not generate the wback_valid to wback module
       // so we dont need the alu_wbck_i_err here
 
@@ -59,7 +59,7 @@ module e203_exu_wbck(
   input  rst_n
   );
 
-
+//使用优先级仲裁，如果两种指令同时写回，长指令具有更高的优先级
   // The ALU instruction can write-back only when there is no any 
   //  long pipeline instruction writing-back
   //    * Since ALU is the 1 cycle instructions, it have lowest 

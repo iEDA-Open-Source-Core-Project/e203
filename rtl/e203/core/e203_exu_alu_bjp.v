@@ -113,12 +113,16 @@ module e203_exu_alu_bjp(
   assign bjp_req_alu_cmp_gt  = bjp_i_info [`E203_DECINFO_BJP_BGT  ]; 
   assign bjp_req_alu_cmp_ltu = bjp_i_info [`E203_DECINFO_BJP_BLTU ]; 
   assign bjp_req_alu_cmp_gtu = bjp_i_info [`E203_DECINFO_BJP_BGTU ]; 
-
+// 
   assign bjp_req_alu_add  = wbck_link;
 
   assign bjp_o_valid     = bjp_i_valid;
   assign bjp_i_ready     = bjp_o_ready;
+  // 将预测的跳转结果发送给交付模块
   assign bjp_o_cmt_prdt  = bjp_i_bprdt;
+  // 将真实的跳转结果发送给交付模块
+      // 如果是无条件跳转（JUMP）指令一定会跳
+      // 如果是条件跳转（Conditional Branch）则会使用ALU运算数据进行比较运算结果
   assign bjp_o_cmt_rslv  = jump ? 1'b1 : bjp_req_alu_cmp_res;
 
   assign bjp_o_wbck_wdat  = bjp_req_alu_add_res;

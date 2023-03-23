@@ -37,13 +37,14 @@ module e203_exu_longpwbck(
   input  lsu_wbck_i_valid, // Handshake valid
   output lsu_wbck_i_ready, // Handshake ready
   input  [`E203_XLEN-1:0] lsu_wbck_i_wdat,
-  input  [`E203_ITAG_WIDTH -1:0] lsu_wbck_i_itag,
-  input  lsu_wbck_i_err , // The error exception generated
-  input  lsu_cmt_i_buserr ,
-  input  [`E203_ADDR_SIZE -1:0] lsu_cmt_i_badaddr,
-  input  lsu_cmt_i_ld, 
-  input  lsu_cmt_i_st, 
+  input  [`E203_ITAG_WIDTH -1:0] lsu_wbck_i_itag,                   // 写回指令的ITAG
+  input  lsu_wbck_i_err , // The error exception generated          // 写回的异常错误指示
+  input  lsu_cmt_i_buserr ,                                         // 访存错误异常错误指示
+  input  [`E203_ADDR_SIZE -1:0] lsu_cmt_i_badaddr,                  // 产生访存错误的地址
+  input  lsu_cmt_i_ld,                                              // 产生访存错误位Load指令
+  input  lsu_cmt_i_st,                                              // 产生访存错误位Store指令
 
+// 仲裁后的写回接口，通过最终写回仲裁模块
   //////////////////////////////////////////////////////////////
   // The Long pipe instruction Wback interface to final wbck module
   output longp_wbck_o_valid, // Handshake valid
@@ -52,7 +53,7 @@ module e203_exu_longpwbck(
   output [5-1:0] longp_wbck_o_flags,
   output [`E203_RFIDX_WIDTH -1:0] longp_wbck_o_rdidx,
   output longp_wbck_o_rdfpu,
-  //
+// 仲裁后的异常接口，通给交付模块
   // The Long pipe instruction Exception interface to commit stage
   output  longp_excp_o_valid,
   input   longp_excp_o_ready,
@@ -87,7 +88,7 @@ module e203_exu_longpwbck(
 
   // The Long-pipe instruction can write-back only when it's itag 
   //   is same as the itag of toppest entry of OITF
-  wire wbck_ready4lsu = (lsu_wbck_i_itag == oitf_ret_ptr) & (~oitf_empty);
+  wire wbck_ready4lsu = (lsu_wbck_i_itag == oitf_ret_ptr) & (~oitf_empty); // 使用OITF的读指针 ret_ptr 作为长指令写回仲裁的选择参考
   wire wbck_sel_lsu = lsu_wbck_i_valid & wbck_ready4lsu;
 
   `ifdef E203_HAS_NICE//{
@@ -164,21 +165,21 @@ module e203_exu_longpwbck(
 
   // If the instruction have no error and it have the rdwen, then it need to 
   //   write back into regfile, otherwise, it does not need to write regfile
-  wire need_wbck = wbck_i_rdwen & (~wbck_i_err);
+  wire need_wbck = wbck_i_rdwen & (~wbck_i_err);   // 没有错误指令才需要写回通用寄存器组
 
   // If the long pipe instruction have error result, then it need to handshake
   //   with the commit module.
-  wire need_excp = wbck_i_err
+  wire need_excp = wbck_i_err    // 产生错误指令，需要和交付模块链接
                    `ifdef E203_HAS_NICE//{
                    & (~ (wbck_sel_nice & nice_wbck_i_err))   
                    `endif//}
                    ;
-
+// 需要保证交付模块和最终写回仲裁模块同时能够接受
   assign wbck_i_ready = 
        (need_wbck ? longp_wbck_o_ready : 1'b1)
      & (need_excp ? longp_excp_o_ready : 1'b1);
 
-
+// 送给最终写回仲裁模块的握手信号
   assign longp_wbck_o_valid = need_wbck & wbck_i_valid & (need_excp ? longp_excp_o_ready : 1'b1);
   assign longp_excp_o_valid = need_excp & wbck_i_valid & (need_wbck ? longp_wbck_o_ready : 1'b1);
 
@@ -189,6 +190,9 @@ module e203_exu_longpwbck(
 
   assign longp_excp_o_pc    = wbck_i_pc;
 
+// 每次从长指令写回仲裁模块成功地写回一条长指令之后，
+// 便将此指令在OITF中的表项去除，即从FIFO模块退出，完成其历史使命
+// 以下信号即为成功写回一条长指令的使能信号
   assign oitf_ret_ena = wbck_i_valid & wbck_i_ready;
 
   `ifdef E203_HAS_NICE//{

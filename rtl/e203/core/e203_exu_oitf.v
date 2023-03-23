@@ -76,8 +76,8 @@ module e203_exu_oitf (
   //  PC of exception of long-pipe instruction
   wire [`E203_PC_SIZE-1:0] pc_r[`E203_OITF_DEPTH-1:0];
 
-  wire alc_ptr_ena = dis_ena;
-  wire ret_ptr_ena = ret_ena;
+  wire alc_ptr_ena = dis_ena;   //派遣1个长指令的使能信号,作为写指针的便能信号
+  wire ret_ptr_ena = ret_ena;   //写回1个长指令的使能信号,作为写指针的便能信号
 
   wire oitf_full ;
   
@@ -86,6 +86,7 @@ module e203_exu_oitf (
 
   generate
   if(`E203_OITF_DEPTH > 1) begin: depth_gt1//{
+   //常规fifo一致，为了方便维护空满标志，为写指针增加额外的一个标志位 
       wire alc_ptr_flg_r;
       wire alc_ptr_flg_nxt = ~alc_ptr_flg_r;
       wire alc_ptr_flg_ena = (alc_ptr_r == ($unsigned(`E203_OITF_DEPTH-1))) & alc_ptr_ena;
@@ -93,12 +94,12 @@ module e203_exu_oitf (
       sirv_gnrl_dfflr #(1) alc_ptr_flg_dfflrs(alc_ptr_flg_ena, alc_ptr_flg_nxt, alc_ptr_flg_r, clk, rst_n);
       
       wire [`E203_ITAG_WIDTH-1:0] alc_ptr_nxt; 
-      
+      //每次分配一个表项，写指针自增1，如果达到了FIFO深度值，写指针归零
       assign alc_ptr_nxt = alc_ptr_flg_ena ? `E203_ITAG_WIDTH'b0 : (alc_ptr_r + 1'b1);
       
       sirv_gnrl_dfflr #(`E203_ITAG_WIDTH) alc_ptr_dfflrs(alc_ptr_ena, alc_ptr_nxt, alc_ptr_r, clk, rst_n);
       
-      
+      //常规fifo一致，为了方便维护空满标志，为读指针增加额外的一个标志位 
       wire ret_ptr_flg_r;
       wire ret_ptr_flg_nxt = ~ret_ptr_flg_r;
       wire ret_ptr_flg_ena = (ret_ptr_r == ($unsigned(`E203_OITF_DEPTH-1))) & ret_ptr_ena;
@@ -106,7 +107,7 @@ module e203_exu_oitf (
       sirv_gnrl_dfflr #(1) ret_ptr_flg_dfflrs(ret_ptr_flg_ena, ret_ptr_flg_nxt, ret_ptr_flg_r, clk, rst_n);
       
       wire [`E203_ITAG_WIDTH-1:0] ret_ptr_nxt; 
-      
+      //每次分配一个表项，读指针自增1，如果达到了FIFO深度值，读指针归零
       assign ret_ptr_nxt = ret_ptr_flg_ena ? `E203_ITAG_WIDTH'b0 : (ret_ptr_r + 1'b1);
 
       sirv_gnrl_dfflr #(`E203_ITAG_WIDTH) ret_ptr_dfflrs(ret_ptr_ena, ret_ptr_nxt, ret_ptr_r, clk, rst_n);
@@ -140,8 +141,10 @@ module e203_exu_oitf (
   genvar i;
   generate //{
       for (i=0; i<`E203_OITF_DEPTH; i=i+1) begin:oitf_entries//{
-  
+// 生成个表项中是否存放了有效指令的指示信号
+          // 每次分配一个表项时，且写指针与当前表项编号一样，则将该表项的有效信号设置为高  
         assign vld_set[i] = alc_ptr_ena & (alc_ptr_r == i);
+          // 每次移除一个表项时，且读指针与当前表项编号一样，则将该表项的有效信号清除位低  
         assign vld_clr[i] = ret_ptr_ena & (ret_ptr_r == i);
         assign vld_ena[i] = vld_set[i] |   vld_clr[i];
         assign vld_nxt[i] = vld_set[i] | (~vld_clr[i]);
@@ -161,10 +164,10 @@ module e203_exu_oitf (
       end//}
   endgenerate//}
 
-  assign oitfrd_match_disprs1 = |rd_match_rs1idx;
-  assign oitfrd_match_disprs2 = |rd_match_rs2idx;
-  assign oitfrd_match_disprs3 = |rd_match_rs3idx;
-  assign oitfrd_match_disprd  = |rd_match_rdidx ;
+  assign oitfrd_match_disprs1 = |rd_match_rs1idx;  //RAW
+  assign oitfrd_match_disprs2 = |rd_match_rs2idx;  //RAW
+  assign oitfrd_match_disprs3 = |rd_match_rs3idx;  //RAW
+  assign oitfrd_match_disprd  = |rd_match_rdidx ;  //WAW
 
   assign ret_rdidx = rdidx_r[ret_ptr];
   assign ret_pc    = pc_r [ret_ptr];
