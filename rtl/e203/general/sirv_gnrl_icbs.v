@@ -1166,8 +1166,8 @@ module sirv_gnrl_icb2axi # (
   wire rw_fifo_o_valid ;
   wire rw_fifo_o_ready = rw_fifo_ren;
 
-  assign rw_fifo_full    = (~rw_fifo_i_ready);
-  wire rw_fifo_empty   = (~rw_fifo_o_valid);
+  assign rw_fifo_full    = (~rw_fifo_i_ready);  // 若fifo无法写入，则表示 full
+  wire rw_fifo_empty   = (~rw_fifo_o_valid);    // 若fifo无法读出，则表示empty
 
   wire i_icb_rsp_read;
 

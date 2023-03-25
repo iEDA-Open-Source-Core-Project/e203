@@ -1,0 +1,117 @@
+#! /usr/local/bin/vvp
+:ivl_version "12.0 (stable)" "(v12_0)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/local/lib/ivl/system.vpi";
+:vpi_module "/usr/local/lib/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/local/lib/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/local/lib/ivl/v2005_math.vpi";
+:vpi_module "/usr/local/lib/ivl/va_math.vpi";
+S_0x55d79b1aed30 .scope module, "sirv_expl_axi_slv" "sirv_expl_axi_slv" 2 27;
+ .timescale 0 0;
+    .port_info 0 /INPUT 1 "axi_arvalid";
+    .port_info 1 /OUTPUT 1 "axi_arready";
+    .port_info 2 /INPUT 32 "axi_araddr";
+    .port_info 3 /INPUT 4 "axi_arcache";
+    .port_info 4 /INPUT 3 "axi_arprot";
+    .port_info 5 /INPUT 2 "axi_arlock";
+    .port_info 6 /INPUT 2 "axi_arburst";
+    .port_info 7 /INPUT 4 "axi_arlen";
+    .port_info 8 /INPUT 3 "axi_arsize";
+    .port_info 9 /INPUT 1 "axi_awvalid";
+    .port_info 10 /OUTPUT 1 "axi_awready";
+    .port_info 11 /INPUT 32 "axi_awaddr";
+    .port_info 12 /INPUT 4 "axi_awcache";
+    .port_info 13 /INPUT 3 "axi_awprot";
+    .port_info 14 /INPUT 2 "axi_awlock";
+    .port_info 15 /INPUT 2 "axi_awburst";
+    .port_info 16 /INPUT 4 "axi_awlen";
+    .port_info 17 /INPUT 3 "axi_awsize";
+    .port_info 18 /OUTPUT 1 "axi_rvalid";
+    .port_info 19 /INPUT 1 "axi_rready";
+    .port_info 20 /OUTPUT 32 "axi_rdata";
+    .port_info 21 /OUTPUT 2 "axi_rresp";
+    .port_info 22 /OUTPUT 1 "axi_rlast";
+    .port_info 23 /INPUT 1 "axi_wvalid";
+    .port_info 24 /OUTPUT 1 "axi_wready";
+    .port_info 25 /INPUT 32 "axi_wdata";
+    .port_info 26 /INPUT 4 "axi_wstrb";
+    .port_info 27 /INPUT 1 "axi_wlast";
+    .port_info 28 /OUTPUT 1 "axi_bvalid";
+    .port_info 29 /INPUT 1 "axi_bready";
+    .port_info 30 /OUTPUT 2 "axi_bresp";
+    .port_info 31 /INPUT 1 "clk";
+    .port_info 32 /INPUT 1 "rst_n";
+P_0x55d79b1d2ae0 .param/l "AW" 0 2 28, +C4<00000000000000000000000000100000>;
+P_0x55d79b1d2b20 .param/l "DW" 0 2 29, +C4<00000000000000000000000000100000>;
+o0x7f51698bf198 .functor BUFZ 1, C4<z>; HiZ drive
+L_0x55d79b203b60 .functor BUFZ 1, o0x7f51698bf198, C4<0>, C4<0>, C4<0>;
+o0x7f51698bf468 .functor BUFZ 1, C4<z>; HiZ drive
+L_0x55d79b203bf0 .functor BUFZ 1, o0x7f51698bf468, C4<0>, C4<0>, C4<0>;
+o0x7f51698bf5b8 .functor BUFZ 1, C4<z>; HiZ drive
+L_0x55d79b213d90 .functor BUFZ 1, o0x7f51698bf5b8, C4<0>, C4<0>, C4<0>;
+o0x7f51698bf378 .functor BUFZ 1, C4<z>; HiZ drive
+L_0x55d79b213e60 .functor BUFZ 1, o0x7f51698bf378, C4<0>, C4<0>, C4<0>;
+o0x7f51698bf018 .functor BUFZ 32, C4<zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz>; HiZ drive
+v0x55d79b1af420_0 .net "axi_araddr", 31 0, o0x7f51698bf018;  0 drivers
+o0x7f51698bf048 .functor BUFZ 2, C4<zz>; HiZ drive
+v0x55d79b201ac0_0 .net "axi_arburst", 1 0, o0x7f51698bf048;  0 drivers
+o0x7f51698bf078 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x55d79b201ba0_0 .net "axi_arcache", 3 0, o0x7f51698bf078;  0 drivers
+o0x7f51698bf0a8 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x55d79b201c60_0 .net "axi_arlen", 3 0, o0x7f51698bf0a8;  0 drivers
+o0x7f51698bf0d8 .functor BUFZ 2, C4<zz>; HiZ drive
+v0x55d79b201d40_0 .net "axi_arlock", 1 0, o0x7f51698bf0d8;  0 drivers
+o0x7f51698bf108 .functor BUFZ 3, C4<zzz>; HiZ drive
+v0x55d79b201e70_0 .net "axi_arprot", 2 0, o0x7f51698bf108;  0 drivers
+v0x55d79b201f50_0 .net "axi_arready", 0 0, L_0x55d79b203bf0;  1 drivers
+o0x7f51698bf168 .functor BUFZ 3, C4<zzz>; HiZ drive
+v0x55d79b202010_0 .net "axi_arsize", 2 0, o0x7f51698bf168;  0 drivers
+v0x55d79b2020f0_0 .net "axi_arvalid", 0 0, o0x7f51698bf198;  0 drivers
+o0x7f51698bf1c8 .functor BUFZ 32, C4<zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz>; HiZ drive
+v0x55d79b2021b0_0 .net "axi_awaddr", 31 0, o0x7f51698bf1c8;  0 drivers
+o0x7f51698bf1f8 .functor BUFZ 2, C4<zz>; HiZ drive
+v0x55d79b202290_0 .net "axi_awburst", 1 0, o0x7f51698bf1f8;  0 drivers
+o0x7f51698bf228 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x55d79b202370_0 .net "axi_awcache", 3 0, o0x7f51698bf228;  0 drivers
+o0x7f51698bf258 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x55d79b202450_0 .net "axi_awlen", 3 0, o0x7f51698bf258;  0 drivers
+o0x7f51698bf288 .functor BUFZ 2, C4<zz>; HiZ drive
+v0x55d79b202530_0 .net "axi_awlock", 1 0, o0x7f51698bf288;  0 drivers
+o0x7f51698bf2b8 .functor BUFZ 3, C4<zzz>; HiZ drive
+v0x55d79b202610_0 .net "axi_awprot", 2 0, o0x7f51698bf2b8;  0 drivers
+L_0x7f5169876138 .functor BUFT 1, C4<1>, C4<0>, C4<0>, C4<0>;
+v0x55d79b2026f0_0 .net "axi_awready", 0 0, L_0x7f5169876138;  1 drivers
+o0x7f51698bf318 .functor BUFZ 3, C4<zzz>; HiZ drive
+v0x55d79b2027b0_0 .net "axi_awsize", 2 0, o0x7f51698bf318;  0 drivers
+o0x7f51698bf348 .functor BUFZ 1, C4<z>; HiZ drive
+v0x55d79b202890_0 .net "axi_awvalid", 0 0, o0x7f51698bf348;  0 drivers
+v0x55d79b202950_0 .net "axi_bready", 0 0, o0x7f51698bf378;  0 drivers
+L_0x7f51698760f0 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0x55d79b202a10_0 .net "axi_bresp", 1 0, L_0x7f51698760f0;  1 drivers
+v0x55d79b202af0_0 .net "axi_bvalid", 0 0, L_0x55d79b213d90;  1 drivers
+L_0x7f5169876018 .functor BUFT 1, C4<00000000000000000000000000000000>, C4<0>, C4<0>, C4<0>;
+v0x55d79b202bb0_0 .net "axi_rdata", 31 0, L_0x7f5169876018;  1 drivers
+L_0x7f51698760a8 .functor BUFT 1, C4<1>, C4<0>, C4<0>, C4<0>;
+v0x55d79b202c90_0 .net "axi_rlast", 0 0, L_0x7f51698760a8;  1 drivers
+v0x55d79b202d50_0 .net "axi_rready", 0 0, o0x7f51698bf468;  0 drivers
+L_0x7f5169876060 .functor BUFT 1, C4<00>, C4<0>, C4<0>, C4<0>;
+v0x55d79b202e10_0 .net "axi_rresp", 1 0, L_0x7f5169876060;  1 drivers
+v0x55d79b202ef0_0 .net "axi_rvalid", 0 0, L_0x55d79b203b60;  1 drivers
+o0x7f51698bf4f8 .functor BUFZ 32, C4<zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz>; HiZ drive
+v0x55d79b202fb0_0 .net "axi_wdata", 31 0, o0x7f51698bf4f8;  0 drivers
+o0x7f51698bf528 .functor BUFZ 1, C4<z>; HiZ drive
+v0x55d79b203090_0 .net "axi_wlast", 0 0, o0x7f51698bf528;  0 drivers
+v0x55d79b203150_0 .net "axi_wready", 0 0, L_0x55d79b213e60;  1 drivers
+o0x7f51698bf588 .functor BUFZ 4, C4<zzzz>; HiZ drive
+v0x55d79b203210_0 .net "axi_wstrb", 3 0, o0x7f51698bf588;  0 drivers
+v0x55d79b2032f0_0 .net "axi_wvalid", 0 0, o0x7f51698bf5b8;  0 drivers
+o0x7f51698bf5e8 .functor BUFZ 1, C4<z>; HiZ drive
+v0x55d79b2033b0_0 .net "clk", 0 0, o0x7f51698bf5e8;  0 drivers
+o0x7f51698bf618 .functor BUFZ 1, C4<z>; HiZ drive
+v0x55d79b203470_0 .net "rst_n", 0 0, o0x7f51698bf618;  0 drivers
+# The file index is used to find the file name in the following table.
+:file_names 3;
+    "N/A";
+    "<interactive>";
+    "/home/zpn/Pro/e203_hbirdv2/rtl/e203/perips/sirv_expl_axi_slv.v";

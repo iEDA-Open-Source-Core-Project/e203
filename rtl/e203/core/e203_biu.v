@@ -496,8 +496,9 @@ module e203_biu(
   ////  to make sure it always can accept any oustanding transactions traded with area cost.
   //// So back to this very low end core, to save areas, we prefetch without knowing if IR can accept
   ////  the response or not, and also in very low end core it is just 1 oustanding (multiple oustanding 
-  ////  belong to mid or high end core), so to cut off this deadlocks, we just let the BIU to trigger
-  ////  and replay indication if LSU cannot get granted, if IFU just overkilly forced to be replayed, it
+  ////  belong to mid or high end core), so to cut off this deadlocks,
+  // we just let the BIU to trigger and replay indication if LSU cannot get granted--- BLU重新执行该指令
+  // if IFU just overkilly forced to be replayed, it
   ////  just lost performance, but we dont care, because in low end core, ifetch to system mem is not
   ////  guranteed by performance. If IFU really suppose to be replayed, then good luck to break this deadlock.
   //wire ifu_replay_r;
@@ -513,6 +514,7 @@ module e203_biu(
   //sirv_gnrl_dfflr #(1)ifu_replay_dffl(ifu_replay_ena, ifu_replay_nxt, ifu_replay_r, clk, rst_n);
   //assign ifu2biu_replay = ifu_replay_r;
 
+// 实例化 Ping-Pong buffer ,砍断外界与处理器核内部之间的时序路径
   wire buf_icb_cmd_valid;
   wire buf_icb_cmd_ready;
   wire [`E203_ADDR_SIZE-1:0] buf_icb_cmd_addr;

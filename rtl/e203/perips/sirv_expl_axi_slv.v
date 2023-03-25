@@ -67,7 +67,7 @@ module sirv_expl_axi_slv #(
   input  clk,  
   input  rst_n
 );
-
+//TODO: Achievement slave
   assign axi_rvalid = axi_arvalid;
   assign axi_arready = axi_rready;
 

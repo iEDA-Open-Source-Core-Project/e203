@@ -167,9 +167,10 @@ module e203_exu_alu_lsuagu(
   wire agu_i_size_hw = (agu_i_size == 2'b01);
   wire agu_i_size_w  = (agu_i_size == 2'b10);
 
+// 判断当前访存的地址是否和操作尺寸对齐
   wire agu_i_addr_unalgn = 
-            (agu_i_size_hw &  agu_icb_cmd_addr[0])
-          | (agu_i_size_w  &  (|agu_icb_cmd_addr[1:0]));
+            (agu_i_size_hw &  agu_icb_cmd_addr[0])         // 若地址最低位不为0，半字 Half-Word 不对齐
+          | (agu_i_size_w  &  (|agu_icb_cmd_addr[1:0]));   // 若地址最低两位不为0，字 Word 不对齐
 
   wire state_last_exit_ena;
   `ifdef E203_SUPPORT_AMO//{
@@ -608,7 +609,7 @@ module e203_exu_alu_lsuagu(
                 ;
   assign agu_o_cmt_badaddr = agu_icb_cmd_addr;
 
-
+// 产生非对齐指示信号给交付接口
   assign agu_o_cmt_misalgn = (1'b0
                 `ifdef E203_SUPPORT_AMO//{
                        | agu_i_unalgnamo 
@@ -616,8 +617,10 @@ module e203_exu_alu_lsuagu(
                        | (agu_i_unalgnldst) //& agu_i_excl) We dont support unaligned load/store regardless it is AMO or not
                        )
                        ;
-  assign agu_o_cmt_ld      = agu_i_load & (~agu_i_excl); 
-  assign agu_o_cmt_stamo   = agu_i_store | agu_i_amo | agu_i_excl;
+
+// 产生Load、Store、AMO指令指示信号给交付接口 
+  assign agu_o_cmt_ld      = agu_i_load & (~agu_i_excl);            // 用于产生读存储器        地址不对齐异常
+  assign agu_o_cmt_stamo   = agu_i_store | agu_i_amo | agu_i_excl;  // -------写------或者AMO------------
 
   
   // The exception or error result cannot write-back
@@ -631,6 +634,7 @@ module e203_exu_alu_lsuagu(
   
 
   assign agu_icb_cmd_valid = 
+            // 只有地址对齐（不会产生异常）的指令才会产生cmd_valid
             ((agu_i_algnldst & agu_i_valid)
               // We must qualify the agu_o_ready signal from commit stage
               // to make sure it is out to commit/LSU at same cycle
@@ -646,7 +650,7 @@ module e203_exu_alu_lsuagu(
             | (agu_i_unalgnamo & 1'b0) 
           `endif//E203_SUPPORT_AMO}
             ;
-  assign agu_icb_cmd_addr = agu_req_alu_res[`E203_ADDR_SIZE-1:0];
+  assign agu_icb_cmd_addr = agu_req_alu_res[`E203_ADDR_SIZE-1:0]; //使用alu共享数据通路模块进行加法运算的结果，作为访存的地址信号
 
   assign agu_icb_cmd_read = 
             (agu_i_algnldst & agu_i_load) 
