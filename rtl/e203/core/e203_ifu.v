@@ -37,7 +37,7 @@ module e203_ifu(
   //input  ifu2itcm_replay,
 
   // The ITCM address region indication signal
-  input [`E203_ADDR_SIZE-1:0] itcm_region_indic,
+  input [`E203_ADDR_SIZE-1:0] itcm_region_indic,                                    // 0x8000_0000
 
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////

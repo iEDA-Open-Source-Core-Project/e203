@@ -791,7 +791,7 @@ module e203_ifu_ift2icb(
   // Dispatch the ICB CMD and RSP Channel to ITCM and System Memory
   //   according to the address range
   `ifdef E203_HAS_ITCM //{
-  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);
+  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
 
   assign ifu2itcm_icb_cmd_valid = ifu_icb_cmd_valid & ifu_icb_cmd2itcm;
   assign ifu2itcm_icb_cmd_addr = ifu_icb_cmd_addr[`E203_ITCM_ADDR_WIDTH-1:0];
@@ -800,7 +800,7 @@ module e203_ifu_ift2icb(
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
-  assign ifu_icb_cmd2biu = 1'b1
+  assign ifu_icb_cmd2biu = 1'b1                            // 当有ITCM时，0x8000处地址都在ITCM寻找，其余地址触发ICB总线
             `ifdef E203_HAS_ITCM //{
               & ~(ifu_icb_cmd2itcm)
             `endif//}

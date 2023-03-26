@@ -480,7 +480,7 @@ module e203_itcm_ctrl(
   `ifndef E203_HAS_ECC //{
   sirv_sram_icb_ctrl #(
       .DW     (`E203_ITCM_DATA_WIDTH),
-      .AW     (`E203_ITCM_ADDR_WIDTH),
+      .AW     (`E203_ITCM_ADDR_WIDTH),       //16
       .MW     (`E203_ITCM_WMSK_WIDTH),
       .AW_LSB (3),// ITCM is 64bits wide, so the LSB is 3
       .USR_W  (2) 

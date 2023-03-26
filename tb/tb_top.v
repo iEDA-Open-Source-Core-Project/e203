@@ -265,9 +265,10 @@ module tb_top();
 
   integer i;
 
-    reg [7:0] itcm_mem [0:(`E203_ITCM_RAM_DP*8)-1];
+    reg [7:0] itcm_mem [0:(`E203_ITCM_RAM_DP*8)-1];   // [0 : 0x0001_0000] -> [0 : 0x0008_0000]
     initial begin
       $readmemh({testcase, ".verilog"}, itcm_mem);
+//    $display("E203_ITCM_RAM_DP: %h", `E203_ITCM_RAM_DP);
 
       for (i=0;i<(`E203_ITCM_RAM_DP);i=i+1) begin
           `ITCM.mem_r[i][00+7:00] = itcm_mem[i*8+0];
