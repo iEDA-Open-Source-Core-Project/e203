@@ -28,7 +28,7 @@ print('TB is ok')
 tb.close()
 
 ############################## core #############################
-log = open("./install/rtl/e203_cpu_top.v", "w")  # 打开文件
+log = open("./install/rtl/core/e203_cpu_top.v", "w")  # 打开文件
 log.truncate()
 log.write(open(E203con).read())
 log.write(e203def)

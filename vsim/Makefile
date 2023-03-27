@@ -21,6 +21,9 @@ install:
 	mkdir -p ${SIM_DIR}/install/tb
 	cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
 	cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+	rm -rf ${SIM_DIR}/install/rtl/core/*.v
+	cp ${SIM_DIR}/../rtl/e203/core/config.v ${SIM_DIR}/install/rtl/e203/core
+	cp ${SIM_DIR}/../rtl/e203/core/e203_define.v ${SIM_DIR}/install/rtl/e203/e203_define
 #	python3 ./mergefile.py
 #	rm -rf 
 
