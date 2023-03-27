@@ -17,9 +17,12 @@ core_name = $(shell echo $(CORE) | tr A-Z a-z)
 all: run_test
 
 install: 
+#	mkdir -p ${SIM_DIR}/install/tb ${SIM_DIR}/install/rtl
 	mkdir -p ${SIM_DIR}/install/tb
 	cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
 	cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+#	python3 ./mergefile.py
+#	rm -rf 
 
 ${RUN_DIR}:
 	mkdir -p ${RUN_DIR}

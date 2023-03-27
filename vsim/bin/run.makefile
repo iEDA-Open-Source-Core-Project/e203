@@ -15,6 +15,7 @@ TESTNAME     := $(notdir $(patsubst %.dump,%,${TESTCASE}.dump))
 TEST_RUNDIR  := ${TESTNAME}
 
 RTL_V_FILES		:= $(wildcard ${VSRC_DIR}/*/*.v ${VSRC_DIR}/*/*/*.v)
+#RTL_V_FILES		:= $(wildcard ${VSRC_DIR}/*.v)
 TB_V_FILES		:= $(wildcard ${VTB_DIR}/*.v)
 
 # The following portion is depending on the EDA tools you are using, Please add them by yourself according to your EDA vendors
@@ -28,6 +29,7 @@ SIM_OPTIONS   += +incdir+"${VSRC_DIR}/core/"+"${VSRC_DIR}/perips/"+"${VSRC_DIR}/
 endif
 ifeq ($(SIM_TOOL),iverilog)
 SIM_OPTIONS   := -o vvp.exec -I "${VSRC_DIR}/core/" -I "${VSRC_DIR}/perips/" -I "${VSRC_DIR}/perips/apb_i2c/" -D DISABLE_SV_ASSERTION=1 -g2005-sv
+#SIM_OPTIONS   := -o vvp.exec -D DISABLE_SV_ASSERTION=1 -g2005-sv
 endif
 
 
