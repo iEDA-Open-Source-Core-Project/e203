@@ -48,3 +48,4 @@ for path in e203Files.splitlines():
     log.write(f)  # 写入文件
     print('已经合并：' + path)
 log.close()
+print('Core is ok')

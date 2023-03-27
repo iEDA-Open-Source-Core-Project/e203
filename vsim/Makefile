@@ -17,15 +17,11 @@ core_name = $(shell echo $(CORE) | tr A-Z a-z)
 all: run_test
 
 install: 
-#	mkdir -p ${SIM_DIR}/install/tb ${SIM_DIR}/install/rtl
-	mkdir -p ${SIM_DIR}/install/tb
-	cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
-	cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
-	rm -rf ${SIM_DIR}/install/rtl/core/*.v
-	cp ${SIM_DIR}/../rtl/e203/core/config.v ${SIM_DIR}/install/rtl/e203/core
-	cp ${SIM_DIR}/../rtl/e203/core/e203_define.v ${SIM_DIR}/install/rtl/e203/e203_define
-#	python3 ./mergefile.py
-#	rm -rf 
+	@mkdir -p ${SIM_DIR}/install/tb
+	@cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
+	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
+	@python3 ./mergefile.py
 
 ${RUN_DIR}:
 	mkdir -p ${RUN_DIR}
