@@ -13,12 +13,20 @@ e203Path = os.path.join('..', 'rtl', 'e203')
 tbPath = os.path.join('..', 'tb')
 
 # e203Files = glob.glob(os.path.join(e203Path,'core', '*.v'))
-e203Files = glob.glob(os.path.join(e203Path, '**', '*.v'))
+e203Files = glob.glob(os.path.join(e203Path, '**', '*.v'))           # 寻找e203子目录下所有文件
+apbFiles = glob.glob(os.path.join(e203Path, '**', '**','*.v'))       # 寻找e203子子目录下所有文件
+allFiles = e203Files + apbFiles
+
 tbFiles = glob.glob(os.path.join(tbPath, 'tb_top.v'), recursive=True)
 E203con = os.path.join(e203Path, 'core', 'config.v')
 E203def = os.path.join(e203Path, 'core', 'e203_defines.v')
-# print(e203Files)
-#print(tbFiles, E203con, E203def)
+E203i2c = os.path.join(e203Path, 'perips', 'apb_i2c', 'i2c_master_defines.v')
+
+# 输出文件数量
+print('Found {} e203 files'.format(len(allFiles)))
+
+# 输出文件列表
+for file in allFiles: print(file)
 
 # 读取文件内容
 with open(E203def) as f:
@@ -33,6 +41,7 @@ with open('./install/tb/tb_top.v', 'w') as tb:
         with open(path) as f:
             content = f.read()
             content = content.replace('`include "e203_defines.v"', "")
+
             tb.write(content)
     logging.info('TB is ok')
 
@@ -40,8 +49,10 @@ with open('./install/tb/tb_top.v', 'w') as tb:
 # with open('./install/rtl/core/e203_cpu_top.v', 'w') as log:
 with open('./install/rtl/e203_soc_top.v', 'w') as log:
     log.write(open(E203con).read())
+    log.write(open(E203i2c).read())
     log.write(e203def)
-    for path in e203Files:
+    for path in allFiles:
+    # for path in e203Files:
         filename = os.path.basename(path)
         if filename in ['config.v', 'e203_defines.v', 'i2c_master_defines.v']:
             continue
@@ -50,6 +61,7 @@ with open('./install/rtl/e203_soc_top.v', 'w') as log:
             with open(path) as f:
                 content = f.read()
                 content = content.replace('`include "e203_defines.v"', "")
+                content = content.replace('`include "i2c_master_defines.v"', "")
                 log.write(content)
 #                print('已经合并：' + path)
     logging.info('Core is ok')
