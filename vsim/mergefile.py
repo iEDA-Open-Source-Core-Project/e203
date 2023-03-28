@@ -46,6 +46,6 @@ for path in e203Files.splitlines():
 #    f = f.replace('ysyx_041514_soc','ysyx_041514')# 模块名称替换，满足端口要求
 
     log.write(f)  # 写入文件
-    print('已经合并：' + path)
+#    print('已经合并：' + path)
 log.close()
 print('Core is ok')

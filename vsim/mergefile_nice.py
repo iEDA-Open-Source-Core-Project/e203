@@ -11,7 +11,8 @@ import os
 
 # 查找文件路径
 e203Files = glob.glob('../rtl/e203/core/*.v')
-tbFiles = glob.glob('../tb/**/tb_top.v', recursive=True)
+#tbFiles = glob.glob('../tb/*.v', recursive=True)
+tbFiles = glob.glob('../tb/tb_top.v', recursive=True)
 E203con = '../rtl/e203/core/config.v'
 E203def = '../rtl/e203/core/e203_defines.v'
 
@@ -25,8 +26,8 @@ with open('./install/tb/tb_top.v', 'w') as tb:
     tb.write(open(E203con).read())
     tb.write(e203def)
     for path in tbFiles:
-        if path.endswith('/tb_top.v'):
-            continue
+#        if path.endswith('/tb_top.v'):
+#            continue
         with open(path) as f:
             content = f.read()
             content = content.replace('`include "e203_defines.v"', "")
@@ -47,6 +48,8 @@ with open('./install/rtl/core/e203_cpu_top.v', 'w') as log:
                 content = f.read()
                 content = content.replace('`include "e203_defines.v"', "")
                 log.write(content)
-                print('已经合并：' + path)
+#                print('已经合并：' + path)
     print('Core is ok')
-#优化后的代码使用了 glob.glob() 方法来查找文件路径，使用 with open() 语句来读取和写入文件，使用 os.path.join() 方法来拼接路径，使用 os.path.splitext() 方法来获取文件扩展名。同时，将 if 语句中的多个判断条件合并成一个条件，使得代码更加简洁和易读。
+# 优化后的代码使用了 glob.glob() 方法来查找文件路径，使用 with open() 语句来读取和写入文件，
+# 使用 os.path.join() 方法来拼接路径，使用 os.path.splitext() 方法来获取文件扩展名。
+# 同时，将 if 语句中的多个判断条件合并成一个条件，使得代码更加简洁和易读。

@@ -21,7 +21,8 @@ install:
 	@cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
 	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
 	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
-	@python3 ./mergefile.py
+	@python3 ./mergefile_nice.py
+#	@python3 ./mergefile.py
 
 ${RUN_DIR}:
 	mkdir -p ${RUN_DIR}
