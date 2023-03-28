@@ -18,19 +18,22 @@ all: run_test
 
 install: 
 	@mkdir -p ${SIM_DIR}/install/tb
-	@cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
-	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
-	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
+	@mkdir -p ${SIM_DIR}/install/rtl
+#	@cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
+#	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+#	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
 	@python3 ./mergefile_nice.py
 #	@python3 ./mergefile.py
 
 ${RUN_DIR}:
-	mkdir -p ${RUN_DIR}
-	rm -f ${RUN_DIR}/Makefile
-	ln -s ${SIM_DIR}/bin/run.makefile ${RUN_DIR}/Makefile
+	@mkdir -p ${RUN_DIR}
+	@rm -f ${RUN_DIR}/Makefile
+	@ln -s ${SIM_DIR}/bin/run.makefile ${RUN_DIR}/Makefile
 
 compile: ${RUN_DIR}
+	@echo '---- start vsim compile ----'
 	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
+	@echo '---- end vsim compile ----'
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
