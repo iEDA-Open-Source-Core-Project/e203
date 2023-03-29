@@ -518,7 +518,7 @@ module e203_subsys_main(
 
     .core_mhartid            (core_mhartid),  
     .dbg_irq_a               (dbg_irq_a),
-    .ext_irq_a               (plic_ext_irq),
+    .ext_irq_a               (1'b0), // no external interrupt from iEda  leesum
     .sft_irq_a               (clint_sft_irq),
     .tmr_irq_a               (clint_tmr_irq),
 

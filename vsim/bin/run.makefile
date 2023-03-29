@@ -56,7 +56,7 @@ ifeq ($(SIM_TOOL),vcs)
 SIM_EXEC      := ${RUN_DIR}/simv +ntb_random_seed_automatic
 endif
 ifeq ($(SIM_TOOL),iverilog)
-SIM_EXEC      := vvp ${RUN_DIR}/vvp.exec -lxt2	
+SIM_EXEC      := vvp ${RUN_DIR}/vvp.exec -lxt2 -fst
 endif
 
 

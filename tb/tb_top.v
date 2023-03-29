@@ -92,77 +92,77 @@ module tb_top();
     tb_sft_irq = 1'b0;
   end
 
-`ifdef ENABLE_TB_FORCE
-  initial begin
-    tb_itcm_bus_err = 1'b0;
-    #100
-    @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
-    forever begin
-      repeat ($urandom_range(1, 20)) @(posedge clk) tb_itcm_bus_err = 1'b0; // Wait random times
-      repeat ($urandom_range(1, 200)) @(posedge clk) tb_itcm_bus_err = 1'b1; // Wait random times
-      if(stop_assert_irq) begin
-          break;
-      end
-    end
-  end
+// `ifdef ENABLE_TB_FORCE
+//   initial begin
+//     tb_itcm_bus_err = 1'b0;
+//     #100
+//     @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
+//     forever begin
+//       repeat ($urandom_range(1, 20)) @(posedge clk) tb_itcm_bus_err = 1'b0; // Wait random times
+//       repeat ($urandom_range(1, 200)) @(posedge clk) tb_itcm_bus_err = 1'b1; // Wait random times
+//       if(stop_assert_irq) begin
+//           break;
+//       end
+//     end
+//   end
 
 
-  initial begin
-    force `EXT_IRQ = tb_ext_irq;
-    force `SFT_IRQ = tb_sft_irq;
-    force `TMR_IRQ = tb_tmr_irq;
-       // We force the bus-error only when:
-       //   It is in common code, not in exception code, by checking MIE bit
-       //   It is in read operation, not write, otherwise the test cannot recover
-    force `ITCM_BUS_ERR = tb_itcm_bus_err
-                        & `STATUS_MIE 
-                        & `ITCM_BUS_READ
-                        ;
-  end
+//   initial begin
+//     force `EXT_IRQ = tb_ext_irq;
+//     force `SFT_IRQ = tb_sft_irq;
+//     force `TMR_IRQ = tb_tmr_irq;
+//        // We force the bus-error only when:
+//        //   It is in common code, not in exception code, by checking MIE bit
+//        //   It is in read operation, not write, otherwise the test cannot recover
+//     force `ITCM_BUS_ERR = tb_itcm_bus_err
+//                         & `STATUS_MIE 
+//                         & `ITCM_BUS_READ
+//                         ;
+//   end
 
 
-  initial begin
-    #100
-    @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
-    forever begin
-      repeat ($urandom_range(1, 1000)) @(posedge clk) tb_ext_irq = 1'b0; // Wait random times
-      tb_ext_irq = 1'b1; // assert the irq
-      @((pc == `PC_EXT_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
-      tb_ext_irq = 1'b0;
-      if(stop_assert_irq) begin
-          break;
-      end
-    end
-  end
+//   initial begin
+//     #100
+//     @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
+//     forever begin
+//       repeat ($urandom_range(1, 1000)) @(posedge clk) tb_ext_irq = 1'b0; // Wait random times
+//       tb_ext_irq = 1'b1; // assert the irq
+//       @((pc == `PC_EXT_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
+//       tb_ext_irq = 1'b0;
+//       if(stop_assert_irq) begin
+//           break;
+//       end
+//     end
+//   end
 
-  initial begin
-    #100
-    @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
-    forever begin
-      repeat ($urandom_range(1, 1000)) @(posedge clk) tb_sft_irq = 1'b0; // Wait random times
-      tb_sft_irq = 1'b1; // assert the irq
-      @((pc == `PC_SFT_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
-      tb_sft_irq = 1'b0;
-      if(stop_assert_irq) begin
-          break;
-      end
-    end
-  end
+//   initial begin
+//     #100
+//     @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
+//     forever begin
+//       repeat ($urandom_range(1, 1000)) @(posedge clk) tb_sft_irq = 1'b0; // Wait random times
+//       tb_sft_irq = 1'b1; // assert the irq
+//       @((pc == `PC_SFT_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
+//       tb_sft_irq = 1'b0;
+//       if(stop_assert_irq) begin
+//           break;
+//       end
+//     end
+//   end
 
-  initial begin
-    #100
-    @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
-    forever begin
-      repeat ($urandom_range(1, 1000)) @(posedge clk) tb_tmr_irq = 1'b0; // Wait random times
-      tb_tmr_irq = 1'b1; // assert the irq
-      @((pc == `PC_TMR_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
-      tb_tmr_irq = 1'b0;
-      if(stop_assert_irq) begin
-          break;
-      end
-    end
-  end
-`endif
+//   initial begin
+//     #100
+//     @(pc == `PC_AFTER_SETMTVEC ) // Wait the program goes out the reset_vector program
+//     forever begin
+//       repeat ($urandom_range(1, 1000)) @(posedge clk) tb_tmr_irq = 1'b0; // Wait random times
+//       tb_tmr_irq = 1'b1; // assert the irq
+//       @((pc == `PC_TMR_IRQ_BEFOR_MRET)) // Wait the program run into the IRQ handler by check PC values
+//       tb_tmr_irq = 1'b0;
+//       if(stop_assert_irq) begin
+//           break;
+//       end
+//     end
+//   end
+// `endif
 
   reg[8*300:1] testcase;
   integer dumpwave;
@@ -180,9 +180,9 @@ module tb_top();
     #120 rst_n <=1;
 
     @(pc_write_to_host_cnt == 32'd8) #10 rst_n <=1;
-`ifdef ENABLE_TB_FORCE
-    @((~tb_tmr_irq) & (~tb_sft_irq) & (~tb_ext_irq)) #10 rst_n <=1;// Wait the interrupt to complete
-`endif
+// `ifdef ENABLE_TB_FORCE
+//     @((~tb_tmr_irq) & (~tb_sft_irq) & (~tb_ext_irq)) #10 rst_n <=1;// Wait the interrupt to complete
+// `endif
 
         $display("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         $display("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
