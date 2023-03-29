@@ -123,7 +123,7 @@ module e203_subsys_mems(
 // 64 bits width icb
   wire                     expl_axi_icb_cmd_valid;
   wire                     expl_axi_icb_cmd_ready;
-  wire [64-1:0]            expl_axi_icb_cmd_addr; 
+  wire [32-1:0]            expl_axi_icb_cmd_addr; 
   wire                     expl_axi_icb_cmd_read;
   wire [64-1:0]            expl_axi_icb_cmd_wdata;
   wire [8 -1:0]            expl_axi_icb_cmd_wmask;

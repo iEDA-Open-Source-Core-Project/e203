@@ -235,7 +235,8 @@
 //
 `ifdef E203_CFG_HAS_AXI//{
   `define E203_HAS_AXI 1
-  `define E203_AXI_ADDR_WIDTH  `E203_CFG_AXI_ADDR_WIDTH
+  // `define E203_AXI_ADDR_WIDTH  `E203_CFG_AXI_ADDR_WIDTH
+  `define E203_AXI_ADDR_WIDTH  32
   // The ITCM size is 2^addr_width bytes, and ITCM is 64bits wide (8 bytes)
   //  so the DP is 2^addr_wdith/8
   //  so the AW is addr_wdith - 3
