@@ -97,16 +97,40 @@ module e203_subsys_mems(
   wire                         mrom_icb_rsp_err  ;
   wire [`E203_XLEN-1:0]        mrom_icb_rsp_rdata;
 
+  // wire                     expl_axi_icb_cmd_valid;
+  // wire                     expl_axi_icb_cmd_ready;
+  // wire [32-1:0]            expl_axi_icb_cmd_addr;
+  // wire                     expl_axi_icb_cmd_read;
+  // wire [32-1:0]            expl_axi_icb_cmd_wdata;
+  // wire [4 -1:0]            expl_axi_icb_cmd_wmask;
+  //
+  // wire                     expl_axi_icb_rsp_valid;
+  // wire                     expl_axi_icb_rsp_ready;
+  // wire [32-1:0]            expl_axi_icb_rsp_rdata;
+  // wire                     expl_axi_icb_rsp_err;
+//32 bits width icb
+  wire                     expl_n2w_axi_icb_cmd_valid;
+  wire                     expl_n2w_axi_icb_cmd_ready;
+  wire [32-1:0]            expl_n2w_axi_icb_cmd_addr;
+  wire                     expl_n2w_axi_icb_cmd_read;
+  wire [32-1:0]            expl_n2w_axi_icb_cmd_wdata;
+  wire [4 -1:0]            expl_n2w_axi_icb_cmd_wmask;
+
+  wire                     expl_n2w_axi_icb_rsp_valid;
+  wire                     expl_n2w_axi_icb_rsp_ready;
+  wire [32-1:0]            expl_n2w_axi_icb_rsp_rdata;
+  wire                     expl_n2w_axi_icb_rsp_err;
+// 64 bits width icb
   wire                     expl_axi_icb_cmd_valid;
   wire                     expl_axi_icb_cmd_ready;
-  wire [32-1:0]            expl_axi_icb_cmd_addr; 
-  wire                     expl_axi_icb_cmd_read; 
-  wire [32-1:0]            expl_axi_icb_cmd_wdata;
-  wire [4 -1:0]            expl_axi_icb_cmd_wmask;
+  wire [64-1:0]            expl_axi_icb_cmd_addr; 
+  wire                     expl_axi_icb_cmd_read;
+  wire [64-1:0]            expl_axi_icb_cmd_wdata;
+  wire [8 -1:0]            expl_axi_icb_cmd_wmask;
   
   wire                     expl_axi_icb_rsp_valid;
   wire                     expl_axi_icb_rsp_ready;
-  wire [32-1:0]            expl_axi_icb_rsp_rdata;
+  wire [64-1:0]            expl_axi_icb_rsp_rdata;
   wire                     expl_axi_icb_rsp_err;
 
 
@@ -285,23 +309,42 @@ module e203_subsys_mems(
    //  * Example AXI    
     .o5_icb_enable     (1'b1),
 
-    .o5_icb_cmd_valid  (expl_axi_icb_cmd_valid),
-    .o5_icb_cmd_ready  (expl_axi_icb_cmd_ready),
-    .o5_icb_cmd_addr   (expl_axi_icb_cmd_addr ),
-    .o5_icb_cmd_read   (expl_axi_icb_cmd_read ),
-    .o5_icb_cmd_wdata  (expl_axi_icb_cmd_wdata),
-    .o5_icb_cmd_wmask  (expl_axi_icb_cmd_wmask),
+    .o5_icb_cmd_valid  (expl_n2w_axi_icb_cmd_valid),
+    .o5_icb_cmd_ready  (expl_n2w_axi_icb_cmd_ready),
+    .o5_icb_cmd_addr   (expl_n2w_axi_icb_cmd_addr ),
+    .o5_icb_cmd_read   (expl_n2w_axi_icb_cmd_read ),
+    .o5_icb_cmd_wdata  (expl_n2w_axi_icb_cmd_wdata),
+    .o5_icb_cmd_wmask  (expl_n2w_axi_icb_cmd_wmask),
     .o5_icb_cmd_lock   (),
     .o5_icb_cmd_excl   (),
     .o5_icb_cmd_size   (),
     .o5_icb_cmd_burst  (),
     .o5_icb_cmd_beat   (),
     
-    .o5_icb_rsp_valid  (expl_axi_icb_rsp_valid),
-    .o5_icb_rsp_ready  (expl_axi_icb_rsp_ready),
-    .o5_icb_rsp_err    (expl_axi_icb_rsp_err),
+    .o5_icb_rsp_valid  (expl_n2w_axi_icb_rsp_valid),
+    .o5_icb_rsp_ready  (expl_n2w_axi_icb_rsp_ready),
+    .o5_icb_rsp_err    (expl_n2w_axi_icb_rsp_err),
     .o5_icb_rsp_excl_ok(1'b0  ),
-    .o5_icb_rsp_rdata  (expl_axi_icb_rsp_rdata),
+    .o5_icb_rsp_rdata  (expl_n2w_axi_icb_rsp_rdata),
+    // .o5_icb_enable     (1'b1),
+
+    // .o5_icb_cmd_valid  (expl_axi_icb_cmd_valid),
+    // .o5_icb_cmd_ready  (expl_axi_icb_cmd_ready),
+    // .o5_icb_cmd_addr   (expl_axi_icb_cmd_addr ),
+    // .o5_icb_cmd_read   (expl_axi_icb_cmd_read ),
+    // .o5_icb_cmd_wdata  (expl_axi_icb_cmd_wdata),
+    // .o5_icb_cmd_wmask  (expl_axi_icb_cmd_wmask),
+    // .o5_icb_cmd_lock   (),
+    // .o5_icb_cmd_excl   (),
+    // .o5_icb_cmd_size   (),
+    // .o5_icb_cmd_burst  (),
+    // .o5_icb_cmd_beat   (),
+    
+    // .o5_icb_rsp_valid  (expl_axi_icb_rsp_valid),
+    // .o5_icb_rsp_ready  (expl_axi_icb_rsp_ready),
+    // .o5_icb_rsp_err    (expl_axi_icb_rsp_err),
+    // .o5_icb_rsp_excl_ok(1'b0  ),
+    // .o5_icb_rsp_rdata  (expl_axi_icb_rsp_rdata),
 
 
         //  * Not used
@@ -393,28 +436,88 @@ module e203_subsys_mems(
 
   wire expl_axi_rvalid;
   wire expl_axi_rready;
-  wire [`E203_XLEN-1:0] expl_axi_rdata;
+  wire [64-1:0] expl_axi_rdata;
+  // wire [`E203_XLEN-1:0] expl_axi_rdata;
   wire [1:0] expl_axi_rresp;
   wire expl_axi_rlast;
 
   wire expl_axi_wvalid;
   wire expl_axi_wready;
-  wire [`E203_XLEN-1:0] expl_axi_wdata;
-  wire [(`E203_XLEN/8)-1:0] expl_axi_wstrb;
+  // wire [`E203_XLEN-1:0] expl_axi_wdata;
+  // wire [(`E203_XLEN/8)-1:0] expl_axi_wstrb;
+  wire [64-1:0] expl_axi_wdata;
+  wire [(64/8)-1:0] expl_axi_wstrb;
   wire expl_axi_wlast;
 
   wire expl_axi_bvalid;
   wire expl_axi_bready;
   wire [1:0] expl_axi_bresp;
+
+/////////////////////////////////////////////////////////////////////////////   
+// Author: Miaoheng,2023/3/29
+//
+
+////////////////////////////////////////////////////////////////////////////
+  sirv_gnrl_icb_n2w # (
+  // .FIFO_OUTS_NUM   (`E203_ITCM_OUTS_NUM),
+  // .FIFO_CUT_READY  (0),
+  .USR_W      (1),
+  .AW         (`E203_AXI_ADDR_WIDTH),
+  .X_W        (32),
+  .Y_W        (`E203_AXI_DATA_WIDTH) 
+  ) u_subsys_icb_mems2axi_n2w(
+  .i_icb_cmd_valid        (expl_n2w_axi_icb_cmd_valid ),  
+  .i_icb_cmd_ready        (expl_n2w_axi_icb_cmd_ready ),
+  .i_icb_cmd_read         (expl_n2w_axi_icb_cmd_read  ),
+  .i_icb_cmd_addr         (expl_n2w_axi_icb_cmd_addr  ),
+  .i_icb_cmd_wdata        (expl_n2w_axi_icb_cmd_wdata ),
+  .i_icb_cmd_wmask        (expl_n2w_axi_icb_cmd_wmask ),
+  .i_icb_cmd_burst        (2'b0)                   ,
+  .i_icb_cmd_beat         (2'b0)                   ,
+  .i_icb_cmd_lock         (1'b0),
+  .i_icb_cmd_excl         (1'b0),
+  .i_icb_cmd_size         (2'b0),
+  .i_icb_cmd_usr          (1'b0),
    
+  .i_icb_rsp_valid        (expl_n2w_axi_icb_rsp_valid ),
+  .i_icb_rsp_ready        (expl_n2w_axi_icb_rsp_ready ),
+  .i_icb_rsp_err          (expl_n2w_axi_icb_rsp_err)   ,
+  .i_icb_rsp_excl_ok      ()   ,
+  .i_icb_rsp_rdata        (expl_n2w_axi_icb_rsp_rdata ),
+  .i_icb_rsp_usr          (),
+                                                
+  .o_icb_cmd_valid        (expl_axi_icb_cmd_valid ),  
+  .o_icb_cmd_ready        (expl_axi_icb_cmd_ready ),
+  .o_icb_cmd_read         (expl_axi_icb_cmd_read ) ,
+  .o_icb_cmd_addr         (expl_axi_icb_cmd_addr ) ,
+  .o_icb_cmd_wdata        (expl_axi_icb_cmd_wdata ),
+  .o_icb_cmd_wmask        (expl_axi_icb_cmd_wmask) ,
+  .o_icb_cmd_burst        ()                   ,
+  .o_icb_cmd_beat         ()                   ,
+  .o_icb_cmd_lock         (),
+  .o_icb_cmd_excl         (),
+  .o_icb_cmd_size         (),
+  .o_icb_cmd_usr          (),
+   
+  .o_icb_rsp_valid        (expl_axi_icb_rsp_valid ),
+  .o_icb_rsp_ready        (expl_axi_icb_rsp_ready ),
+  .o_icb_rsp_err          (expl_axi_icb_rsp_err)   ,
+  .o_icb_rsp_excl_ok      (1'b0)   ,
+  .o_icb_rsp_rdata        (expl_axi_icb_rsp_rdata ),
+  .o_icb_rsp_usr          (1'b0),
+
+  .clk                    (clk   )                  ,
+  .rst_n                  (rst_n )                 
+  );
+
 sirv_gnrl_icb2axi # (
   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
                     //   User can change it to 0 if dont care
   .AXI_FIFO_CUT_READY (1), // This is to cut the back-pressure signal if you set as 1
   .AW   (32),
-  .FIFO_OUTS_NUM (4),// We only allow 4 oustandings at most for mem, user can configure it to any value
+  // .FIFO_OUTS_NUM (4),// We only allow 4 oustandings at most for mem, user can configure it to any value
   .FIFO_CUT_READY(1),
-  .DW   (`E203_XLEN) 
+  .DW   (64) 
 ) u_expl_axi_icb2axi(
     .i_icb_cmd_valid (expl_axi_icb_cmd_valid),
     .i_icb_cmd_ready (expl_axi_icb_cmd_ready),
@@ -468,10 +571,76 @@ sirv_gnrl_icb2axi # (
     .clk           (clk  ),
     .rst_n         (bus_rst_n) 
   );
+////////////////////////////////////////////////////////////////////////////
+
+
+
+// sirv_gnrl_icb2axi # (
+//   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
+//                     //   User can change it to 0 if dont care
+//   .AXI_FIFO_CUT_READY (1), // This is to cut the back-pressure signal if you set as 1
+//   .AW   (32),
+//   .FIFO_OUTS_NUM (4),// We only allow 4 oustandings at most for mem, user can configure it to any value
+//   .FIFO_CUT_READY(1),
+//   .DW   (`E203_XLEN) 
+// ) u_expl_axi_icb2axi(
+//     .i_icb_cmd_valid (expl_axi_icb_cmd_valid),
+//     .i_icb_cmd_ready (expl_axi_icb_cmd_ready),
+//     .i_icb_cmd_addr  (expl_axi_icb_cmd_addr ),
+//     .i_icb_cmd_read  (expl_axi_icb_cmd_read ),
+//     .i_icb_cmd_wdata (expl_axi_icb_cmd_wdata),
+//     .i_icb_cmd_wmask (expl_axi_icb_cmd_wmask),
+//     .i_icb_cmd_size  (),
+    
+//     .i_icb_rsp_valid (expl_axi_icb_rsp_valid),
+//     .i_icb_rsp_ready (expl_axi_icb_rsp_ready),
+//     .i_icb_rsp_rdata (expl_axi_icb_rsp_rdata),
+//     .i_icb_rsp_err   (expl_axi_icb_rsp_err),
+
+//     .o_axi_arvalid   (expl_axi_arvalid),
+//     .o_axi_arready   (expl_axi_arready),
+//     .o_axi_araddr    (expl_axi_araddr ),
+//     .o_axi_arcache   (expl_axi_arcache),
+//     .o_axi_arprot    (expl_axi_arprot ),
+//     .o_axi_arlock    (expl_axi_arlock ),
+//     .o_axi_arburst   (expl_axi_arburst),
+//     .o_axi_arlen     (expl_axi_arlen  ),
+//     .o_axi_arsize    (expl_axi_arsize ),
+                      
+//     .o_axi_awvalid   (expl_axi_awvalid),
+//     .o_axi_awready   (expl_axi_awready),
+//     .o_axi_awaddr    (expl_axi_awaddr ),
+//     .o_axi_awcache   (expl_axi_awcache),
+//     .o_axi_awprot    (expl_axi_awprot ),
+//     .o_axi_awlock    (expl_axi_awlock ),
+//     .o_axi_awburst   (expl_axi_awburst),
+//     .o_axi_awlen     (expl_axi_awlen  ),
+//     .o_axi_awsize    (expl_axi_awsize ),
+                     
+//     .o_axi_rvalid    (expl_axi_rvalid ),
+//     .o_axi_rready    (expl_axi_rready ),
+//     .o_axi_rdata     (expl_axi_rdata  ),
+//     .o_axi_rresp     (expl_axi_rresp  ),
+//     .o_axi_rlast     (expl_axi_rlast  ),
+                    
+//     .o_axi_wvalid    (expl_axi_wvalid ),
+//     .o_axi_wready    (expl_axi_wready ),
+//     .o_axi_wdata     (expl_axi_wdata  ),
+//     .o_axi_wstrb     (expl_axi_wstrb  ),
+//     .o_axi_wlast     (expl_axi_wlast  ),
+                   
+//     .o_axi_bvalid    (expl_axi_bvalid ),
+//     .o_axi_bready    (expl_axi_bready ),
+//     .o_axi_bresp     (expl_axi_bresp  ),
+
+//     .clk           (clk  ),
+//     .rst_n         (bus_rst_n) 
+//   );
 
 sirv_expl_axi_slv # (
   .AW   (32),
-  .DW   (`E203_XLEN) 
+  .DW   (64) 
+  // .DW   (`E203_XLEN) 
 ) u_perips_expl_axi_slv (
     .axi_arvalid   (expl_axi_arvalid),
     .axi_arready   (expl_axi_arready),
