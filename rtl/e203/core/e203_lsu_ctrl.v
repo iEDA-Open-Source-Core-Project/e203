@@ -561,12 +561,14 @@ module e203_lsu_ctrl(
   //  * The FIFO will be pushed when a ICB CMD handshaked
   //  * The FIFO will be poped  when a ICB RSP handshaked
   `ifdef E203_HAS_ITCM //{
-  wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
+  // wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
+  wire arbt_icb_cmd_itcm = 1'b0;
   `else//}{
   wire arbt_icb_cmd_itcm = 1'b0;
   `endif//}
   `ifdef E203_HAS_DTCM //{
-  wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
+  // wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
+  wire arbt_icb_cmd_dtcm = 1'b0;
   `else//}{
   wire arbt_icb_cmd_dtcm = 1'b0;
   `endif//}

@@ -350,7 +350,7 @@ module e203_subsys_top(
 
 
   e203_subsys_main  u_e203_subsys_main(
-    .pc_rtvec        (pc_rtvec),
+    .pc_rtvec        (32'h8000_0000),
 
     .inspect_mode    (inspect_mode    ), 
     .inspect_por_rst (inspect_por_rst), 
