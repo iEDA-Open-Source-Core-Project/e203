@@ -34,17 +34,18 @@ allFiles = e203Files + apbFiles
 # 使用os.walk函数的好处在于不需要使用glob.glob函数进行多次查找，而是一次性遍历整个目录树，可以提高代码的效率。
 # 
 
-tbFiles = glob.glob(os.path.join(tbPath, 'axi_tb_top.v'), recursive=True)
-# tbFiles = glob.glob(os.path.join(tbPath, 'tb_top.v'), recursive=True)
+# tbFiles = glob.glob(os.path.join(tbPath, 'axi_tb_top.v'), recursive=True)
+# tbFiles = glob.glob(os.path.join(tbPath, 'axi_tb_top.v'), recursive=True)
+tbFiles = glob.glob(os.path.join(tbPath, 'tb_top.v'), recursive=True)
 E203con = os.path.join(e203Path, 'core', 'config.v')
 E203def = os.path.join(e203Path, 'core', 'e203_defines.v')
 E203i2c = os.path.join(e203Path, 'perips', 'apb_i2c', 'i2c_master_defines.v')
-
+print('TB is ', tbFiles)
 # 输出文件数量
 print('Found {} e203 files'.format(len(allFiles)))
 
 # 输出文件列表
-for file in allFiles: print(file)
+# for file in allFiles: print(file)
 
 # 读取文件内容
 with open(E203def) as f:

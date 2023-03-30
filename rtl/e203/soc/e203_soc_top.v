@@ -84,7 +84,7 @@ module e203_soc_top(
 
       // PMU output is just output without enable
   output io_pads_aon_pmu_padrst_o_oval,
-  output io_pads_aon_pmu_vddpaden_o_oval 
+  output io_pads_aon_pmu_vddpaden_o_oval,
 
 //////////////////////////////////////////////////////////
 /// AXI 
@@ -122,7 +122,7 @@ module e203_soc_top(
 
   input  axi_bvalid,
   output axi_bready,
-  input  [1:0] axi_bresp,
+  input  [1:0] axi_bresp
 
 );
 
@@ -316,7 +316,7 @@ module e203_soc_top(
 
     .io_pads_dbgmode1_n_i_ival       (io_pads_dbgmode1_n_i_ival),
 
-    .io_pads_dbgmode2_n_i_ival       (io_pads_dbgmode2_n_i_ival) 
+    .io_pads_dbgmode2_n_i_ival       (io_pads_dbgmode2_n_i_ival),
 
     .axi_arvalid   (axi_arvalid),
     .axi_arready   (axi_arready),
@@ -352,7 +352,7 @@ module e203_soc_top(
       
     .axi_bvalid    (axi_bvalid ),
     .axi_bready    (axi_bready ),
-    .axi_bresp     (axi_bresp  ),
+    .axi_bresp     (axi_bresp  )
 
   );
 

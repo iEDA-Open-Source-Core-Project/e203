@@ -91,41 +91,41 @@ module e203_soc_axi_top(
 // * Here is an example AXI Peripheral
   wire expl_axi_arvalid;
   wire expl_axi_arready;
-  wire [`E202_ADDR_SIZE-1:0] expl_axi_araddr;
-  wire [2:0] expl_axi_arcache;
-  wire [1:0] expl_axi_arprot;
-  wire [0:0] expl_axi_arlock;
-  wire [0:0] expl_axi_arburst;
-  wire [2:0] expl_axi_arlen;
-  wire [1:0] expl_axi_arsize;
+  wire [32-1:0] expl_axi_araddr;
+  wire [3:0] expl_axi_arcache;
+  wire [2:0] expl_axi_arprot;
+  wire [1:0] expl_axi_arlock;
+  wire [1:0] expl_axi_arburst;
+  wire [3:0] expl_axi_arlen;
+  wire [2:0] expl_axi_arsize;
 
   wire expl_axi_awvalid;
   wire expl_axi_awready;
-  wire [`E202_ADDR_SIZE-1:0] expl_axi_awaddr;
-  wire [2:0] expl_axi_awcache;
-  wire [1:0] expl_axi_awprot;
-  wire [0:0] expl_axi_awlock;
-  wire [0:0] expl_axi_awburst;
-  wire [2:0] expl_axi_awlen;
-  wire [1:0] expl_axi_awsize;
+  wire [32-1:0] expl_axi_awaddr;
+  wire [3:0] expl_axi_awcache;
+  wire [2:0] expl_axi_awprot;
+  wire [1:0] expl_axi_awlock;
+  wire [1:0] expl_axi_awburst;
+  wire [3:0] expl_axi_awlen;
+  wire [2:0] expl_axi_awsize;
 
   wire expl_axi_rvalid;
   wire expl_axi_rready;
-  wire [63-1:0] expl_axi_rdata;
-  wire [0:0] expl_axi_rresp;
+  wire [64-1:0] expl_axi_rdata;
+  wire [1:0] expl_axi_rresp;
   wire expl_axi_rlast;
 
   wire expl_axi_wvalid;
   wire expl_axi_wready;
-  wire [63-1:0] expl_axi_wdata;
-  wire [(63/8)-1:0] expl_axi_wstrb;
+  wire [64-1:0] expl_axi_wdata;
+  wire [(64/8)-1:0] expl_axi_wstrb;
   wire expl_axi_wlast;
 
   wire expl_axi_bvalid;
   wire expl_axi_bready;
-  wire [0:0] expl_axi_bresp;
+  wire [1:0] expl_axi_bresp;
 
-e203_soc_top e203_soc_top(
+e203_soc_top u_e203_soc_top(
 
   .hfextclk(hfextclk),
   .hfxoscen(hfxoscen),

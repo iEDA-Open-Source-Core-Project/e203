@@ -9,7 +9,7 @@ module tb_top();
 
   wire hfclk = clk;
 
-  `define CPU_TOP u_e203_soc_top.u_e203_subsys_top.u_e203_subsys_main.u_e203_cpu_top
+  `define CPU_TOP u_e203_soc_axi_top.u_e203_soc_top.u_e203_subsys_top.u_e203_subsys_main.u_e203_cpu_top
   `define EXU `CPU_TOP.u_e203_cpu.u_e203_core.u_e203_exu
   `define ITCM `CPU_TOP.u_e203_srams.u_e203_itcm_ram.u_e203_itcm_gnrl_ram.u_sirv_sim_ram
 
@@ -305,7 +305,7 @@ module tb_top();
   wire jtag_DRV_TDO = 1'b0;
 
 
-e203_soc_top u_e203_soc_top(
+e203_soc_axi_top u_e203_soc_axi_top(
    
    .hfextclk(hfclk),
    .hfxoscen(),

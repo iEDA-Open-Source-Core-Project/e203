@@ -552,7 +552,7 @@ sirv_gnrl_icb2axi # (
                     //   User can change it to 0 if dont care
   .AXI_FIFO_CUT_READY (1), // This is to cut the back-pressure signal if you set as 1
   .AW   (32),
-  // .FIFO_OUTS_NUM (4),// We only allow 4 oustandings at most for mem, user can configure it to any value
+   .FIFO_OUTS_NUM(1),// We only allow 4 oustandings at most for mem, user can configure it to any value
   .FIFO_CUT_READY(1),
   .DW   (64) 
 ) u_expl_axi_icb2axi(
@@ -609,41 +609,41 @@ sirv_gnrl_icb2axi # (
     .rst_n         (bus_rst_n) 
   );
 
-  assign  axi_arvalid = expl_axi_arvalid,
-  assign  expl_axi_arready = axi_arready,
-  assign  axi_araddr = expl_axi_araddr,
-  assign  axi_arcache = expl_axi_arcache,
-  assign  axi_arprot = expl_axi_arprot,
-  assign  axi_arlock = expl_axi_arlock,
-  assign  axi_arburst = expl_axi_arburst,
-  assign  axi_arlen = expl_axi_arlen,
-  assign  axi_arsize = expl_axi_arsize,
+  assign  axi_arvalid = expl_axi_arvalid;
+  assign  expl_axi_arready = axi_arready;
+  assign  axi_araddr = expl_axi_araddr;
+  assign  axi_arcache = expl_axi_arcache;
+  assign  axi_arprot = expl_axi_arprot;
+  assign  axi_arlock = expl_axi_arlock;
+  assign  axi_arburst = expl_axi_arburst;
+  assign  axi_arlen = expl_axi_arlen;
+  assign  axi_arsize = expl_axi_arsize;
 
-  assign  axi_awvalid = expl_axi_awvalid,
-  assign  expl_axi_awready = axi_awready,
-  assign  axi_awaddr = expl_axi_awaddr,
-  assign  axi_awcache = expl_axi_awcache,
-  assign  axi_awprot = expl_axi_awprot,
-  assign  axi_awlock = expl_axi_awlock,
-  assign  axi_awburst = expl_axi_awburst,
-  assign  axi_awlen = expl_axi_awlen,
-  assign  axi_awsize = expl_axi_awsize,
+  assign  axi_awvalid = expl_axi_awvalid;
+  assign  expl_axi_awready = axi_awready;
+  assign  axi_awaddr = expl_axi_awaddr;
+  assign  axi_awcache = expl_axi_awcache;
+  assign  axi_awprot = expl_axi_awprot;
+  assign  axi_awlock = expl_axi_awlock;
+  assign  axi_awburst = expl_axi_awburst;
+  assign  axi_awlen = expl_axi_awlen;
+  assign  axi_awsize = expl_axi_awsize;
 
-  assign  expl_axi_rvalid = axi_rvalid,
-  assign  axi_rready = expl_axi_rready,
-  assign  expl_axi_rdata = axi_rdata,
-  assign  expl_axi_rresp = axi_rresp,
-  assign  expl_axi_rlast = axi_rlast,
+  assign  expl_axi_rvalid = axi_rvalid;
+  assign  axi_rready = expl_axi_rready;
+  assign  expl_axi_rdata = axi_rdata;
+  assign  expl_axi_rresp = axi_rresp;
+  assign  expl_axi_rlast = axi_rlast;
 
-  assign  axi_wvalid = expl_axi_wvalid,
-  assign  expl_axi_wready = axi_wready,
-  assign  axi_wdata = expl_axi_wdata,
-  assign  axi_wstrb = expl_axi_wstrb,
-  assign  axi_wlast = expl_axi_wlast,
+  assign  axi_wvalid = expl_axi_wvalid;
+  assign  expl_axi_wready = axi_wready;
+  assign  axi_wdata = expl_axi_wdata;
+  assign  axi_wstrb = expl_axi_wstrb;
+  assign  axi_wlast = expl_axi_wlast;
 
-  assign  expl_axi_bvalid = axi_bvalid,
-  assign  axi_bready = expl_axi_bready,
-  assign  expl_axi_bresp = axi_bresp,
+  assign  expl_axi_bvalid = axi_bvalid;
+  assign  axi_bready = expl_axi_bready;
+  assign  expl_axi_bresp = axi_bresp;
 ////////////////////////////////////////////////////////////////////////////
 
 
