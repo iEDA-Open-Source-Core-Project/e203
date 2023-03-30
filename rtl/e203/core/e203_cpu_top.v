@@ -425,7 +425,7 @@ module e203_cpu_top(
 
 
     .ppi_region_indic      (ppi_region_indic),
-    .ppi_icb_enable        (ppi_icb_enable),
+    .ppi_icb_enable        (1'b0),              // disable ppi icb,leesum
     .ppi_icb_cmd_valid     (ppi_icb_cmd_valid),
     .ppi_icb_cmd_ready     (ppi_icb_cmd_ready),
     .ppi_icb_cmd_addr      (ppi_icb_cmd_addr ),
@@ -461,7 +461,7 @@ module e203_cpu_top(
     .clint_icb_rsp_rdata     (clint_icb_rsp_rdata),
 
     .plic_region_indic      (plic_region_indic),
-    .plic_icb_enable        (plic_icb_enable),
+    .plic_icb_enable        (1'b0),               // disable plic icb,leesum
     .plic_icb_cmd_valid     (plic_icb_cmd_valid),
     .plic_icb_cmd_ready     (plic_icb_cmd_ready),
     .plic_icb_cmd_addr      (plic_icb_cmd_addr ),
@@ -480,7 +480,7 @@ module e203_cpu_top(
 
 
   `ifdef E203_HAS_FIO //{
-    .fio_icb_enable        (fio_icb_enable),
+    .fio_icb_enable        (1'b0),                // disable fio icb ,leesum
     .fio_region_indic      (fio_region_indic),
     .fio_icb_cmd_valid     (fio_icb_cmd_valid),
     .fio_icb_cmd_ready     (fio_icb_cmd_ready),

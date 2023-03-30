@@ -517,9 +517,9 @@ module e203_subsys_main(
     .dbg_stopcycle   (dbg_stopcycle),
 
     .core_mhartid            (core_mhartid),  
-    .dbg_irq_a               (dbg_irq_a),
-    .ext_irq_a               (1'b0), // no external interrupt from iEda  leesum
-    .sft_irq_a               (clint_sft_irq),
+    .dbg_irq_a               (1'b0),        // no debug interrupt from iEda  leesum
+    .ext_irq_a               (1'b0),        // no external interrupt from iEda  leesum
+    .sft_irq_a               (1'b0),        // no software interrupt from iEda  leesum
     .tmr_irq_a               (clint_tmr_irq),
 
   `ifdef E203_HAS_ITCM_EXTITF //{
