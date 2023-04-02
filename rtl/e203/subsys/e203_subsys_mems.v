@@ -617,7 +617,7 @@ sirv_gnrl_icb2axi # (
   assign  axi_arlock = expl_axi_arlock;
   assign  axi_arburst = expl_axi_arburst;
   assign  axi_arlen = expl_axi_arlen;
-  assign  axi_arsize = expl_axi_arsize;
+  assign  axi_arsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_arsize;
 
   assign  axi_awvalid = expl_axi_awvalid;
   assign  expl_axi_awready = axi_awready;
@@ -627,7 +627,7 @@ sirv_gnrl_icb2axi # (
   assign  axi_awlock = expl_axi_awlock;
   assign  axi_awburst = expl_axi_awburst;
   assign  axi_awlen = expl_axi_awlen;
-  assign  axi_awsize = expl_axi_awsize;
+  assign  axi_awsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_awsize;
 
   assign  expl_axi_rvalid = axi_rvalid;
   assign  axi_rready = expl_axi_rready;

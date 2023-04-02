@@ -47,7 +47,8 @@ module e203_itcm_ram(
  
   sirv_gnrl_ram #(
       `ifndef E203_HAS_ECC//{
-    .FORCE_X2ZERO(0),
+    .FORCE_X2ZERO(1),
+    // .FORCE_X2ZERO(0),
       `endif//}
     .DP(`E203_ITCM_RAM_DP),
     .DW(`E203_ITCM_RAM_DW),

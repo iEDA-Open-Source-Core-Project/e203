@@ -133,7 +133,7 @@ module ysyx_230000 (
   wire jtag_DRV_TDO = 1'b0;
   wire hfclk = clock;
   wire lfextclk = clock;
-  wire rst_n = reset;
+  wire rst_n = !reset;
 
 
 e203_soc_top u_e203_soc_top(

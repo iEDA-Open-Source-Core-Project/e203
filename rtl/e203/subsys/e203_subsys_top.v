@@ -350,7 +350,8 @@ module e203_subsys_top(
 
 
   e203_subsys_main  u_e203_subsys_main(
-    .pc_rtvec        (pc_rtvec),
+    .pc_rtvec        (32'h3000_0000),          // 修改内存映射起始位置
+    // .pc_rtvec        (pc_rtvec),
 
     .inspect_mode    (inspect_mode    ), 
     .inspect_por_rst (inspect_por_rst), 
