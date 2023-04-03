@@ -35,6 +35,9 @@ compile: ${RUN_DIR}
 	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
 	@echo '---- end vsim compile ----'
 
+ysyx:
+	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
+
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
 

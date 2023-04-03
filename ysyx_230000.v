@@ -195,6 +195,7 @@ e203_soc_top u_e203_soc_top(
     .axi_arburst   (io_master_arburst),
     .axi_arlen     (io_master_arlen  ),
     .axi_arsize    (io_master_arsize ),
+    .axi_arid      (io_master_arid),
 
     .axi_awvalid   (io_master_awvalid),
     .axi_awready   (io_master_awready),
@@ -205,12 +206,14 @@ e203_soc_top u_e203_soc_top(
     .axi_awburst   (io_master_awburst),
     .axi_awlen     (io_master_awlen  ),
     .axi_awsize    (io_master_awsize ),
-  
+    .axi_awid      (io_master_awid),
+      
     .axi_rvalid    (io_master_rvalid ),
     .axi_rready    (io_master_rready ),
     .axi_rdata     (io_master_rdata  ),
     .axi_rresp     (io_master_rresp  ),
     .axi_rlast     (io_master_rlast  ),
+    .axi_rid       (io_master_rid),
 
     .axi_wvalid    (io_master_wvalid ),
     .axi_wready    (io_master_wready ),
@@ -220,7 +223,8 @@ e203_soc_top u_e203_soc_top(
  
     .axi_bvalid    (io_master_bvalid ),
     .axi_bready    (io_master_bready ),
-    .axi_bresp     (io_master_bresp  )
+    .axi_bresp     (io_master_bresp  ),
+    .axi_bid       (io_master_bid)
 
 );
 
