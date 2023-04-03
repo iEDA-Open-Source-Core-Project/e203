@@ -83,31 +83,31 @@ module e203_subsys_mems(
   output axi_arvalid,
   input  axi_arready,
   output [32-1:0] axi_araddr,
-  output [3:0] axi_arcache,
-  output [2:0] axi_arprot,
-  output [1:0] axi_arlock,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
   output [1:0] axi_arburst,
-  output [3:0] axi_arlen,
+  output [7:0] axi_arlen,
   output [2:0] axi_arsize,
-  output       axi_arid,
+  output    [3:0]   axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
   output [32-1:0] axi_awaddr,
-  output [3:0] axi_awcache,
-  output [2:0] axi_awprot,
-  output [1:0] axi_awlock,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
   output [1:0] axi_awburst,
-  output [3:0] axi_awlen,
+  output [7:0] axi_awlen,
   output [2:0] axi_awsize,
-  output       axi_awid,
+  output    [3:0]   axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
-  input  axi_rid,
+  input  [3:0]axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -118,7 +118,7 @@ module e203_subsys_mems(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
-  input  axi_bid,
+  input [3:0] axi_bid,
 
   input  clk,
   input  bus_rst_n,
@@ -664,7 +664,7 @@ sirv_gnrl_icb2axi # (
   assign  expl_axi_bvalid = axi_bvalid;
   assign  axi_bready = expl_axi_bready;
   assign  expl_axi_bresp = axi_bresp;
-  assign  expl_axi_bid = axi_bid
+  assign  expl_axi_bid = axi_bid;
 ////////////////////////////////////////////////////////////////////////////
 
 

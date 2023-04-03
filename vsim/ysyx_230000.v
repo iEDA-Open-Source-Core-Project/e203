@@ -19877,31 +19877,31 @@ module e203_subsys_top(
   output axi_arvalid,
   input  axi_arready,
   output [32-1:0] axi_araddr,
-  output [3:0] axi_arcache,
-  output [2:0] axi_arprot,
-  output [1:0] axi_arlock,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
   output [1:0] axi_arburst,
-  output [3:0] axi_arlen,
+  output [7:0] axi_arlen,
   output [2:0] axi_arsize,
-  output       axi_arid,
+  output    [3:0]   axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
   output [32-1:0] axi_awaddr,
-  output [3:0] axi_awcache,
-  output [2:0] axi_awprot,
-  output [1:0] axi_awlock,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
   output [1:0] axi_awburst,
-  output [3:0] axi_awlen,
+  output [7:0] axi_awlen,
   output [2:0] axi_awsize,
-  output       axi_awid,
+  output  [3:0]     axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
-  input  axi_rid,
+  input [3:0] axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -19912,7 +19912,7 @@ module e203_subsys_top(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
-  input  axi_bid,
+  input  [3:0]axi_bid,
 
 
   input  test_iso_override,
@@ -22664,49 +22664,49 @@ sirv_gnrl_icb2axi # (
     .rst_n         (bus_rst_n) 
   );
 
-sirv_expl_axi_slv # (
-  .AW   (32),
-  .DW   (`E203_XLEN) 
-) u_perips_expl_axi_slv (
-    .axi_arvalid   (expl_axi_arvalid),
-    .axi_arready   (expl_axi_arready),
-    .axi_araddr    (expl_axi_araddr ),
-    .axi_arcache   (expl_axi_arcache),
-    .axi_arprot    (expl_axi_arprot ),
-    .axi_arlock    (expl_axi_arlock ),
-    .axi_arburst   (expl_axi_arburst),
-    .axi_arlen     (expl_axi_arlen  ),
-    .axi_arsize    (expl_axi_arsize ),
+// sirv_expl_axi_slv # (
+//   .AW   (32),
+//   .DW   (`E203_XLEN) 
+// ) u_perips_expl_axi_slv (
+//     .axi_arvalid   (expl_axi_arvalid),
+//     .axi_arready   (expl_axi_arready),
+//     .axi_araddr    (expl_axi_araddr ),
+//     .axi_arcache   (expl_axi_arcache),
+//     .axi_arprot    (expl_axi_arprot ),
+//     .axi_arlock    (expl_axi_arlock ),
+//     .axi_arburst   (expl_axi_arburst),
+//     .axi_arlen     (expl_axi_arlen  ),
+//     .axi_arsize    (expl_axi_arsize ),
      
-    .axi_awvalid   (expl_axi_awvalid),
-    .axi_awready   (expl_axi_awready),
-    .axi_awaddr    (expl_axi_awaddr ),
-    .axi_awcache   (expl_axi_awcache),
-    .axi_awprot    (expl_axi_awprot ),
-    .axi_awlock    (expl_axi_awlock ),
-    .axi_awburst   (expl_axi_awburst),
-    .axi_awlen     (expl_axi_awlen  ),
-    .axi_awsize    (expl_axi_awsize ),
+//     .axi_awvalid   (expl_axi_awvalid),
+//     .axi_awready   (expl_axi_awready),
+//     .axi_awaddr    (expl_axi_awaddr ),
+//     .axi_awcache   (expl_axi_awcache),
+//     .axi_awprot    (expl_axi_awprot ),
+//     .axi_awlock    (expl_axi_awlock ),
+//     .axi_awburst   (expl_axi_awburst),
+//     .axi_awlen     (expl_axi_awlen  ),
+//     .axi_awsize    (expl_axi_awsize ),
     
-    .axi_rvalid    (expl_axi_rvalid ),
-    .axi_rready    (expl_axi_rready ),
-    .axi_rdata     (expl_axi_rdata  ),
-    .axi_rresp     (expl_axi_rresp  ),
-    .axi_rlast     (expl_axi_rlast  ),
+//     .axi_rvalid    (expl_axi_rvalid ),
+//     .axi_rready    (expl_axi_rready ),
+//     .axi_rdata     (expl_axi_rdata  ),
+//     .axi_rresp     (expl_axi_rresp  ),
+//     .axi_rlast     (expl_axi_rlast  ),
    
-    .axi_wvalid    (expl_axi_wvalid ),
-    .axi_wready    (expl_axi_wready ),
-    .axi_wdata     (expl_axi_wdata  ),
-    .axi_wstrb     (expl_axi_wstrb  ),
-    .axi_wlast     (expl_axi_wlast  ),
+//     .axi_wvalid    (expl_axi_wvalid ),
+//     .axi_wready    (expl_axi_wready ),
+//     .axi_wdata     (expl_axi_wdata  ),
+//     .axi_wstrb     (expl_axi_wstrb  ),
+//     .axi_wlast     (expl_axi_wlast  ),
   
-    .axi_bvalid    (expl_axi_bvalid ),
-    .axi_bready    (expl_axi_bready ),
-    .axi_bresp     (expl_axi_bresp  ),
+//     .axi_bvalid    (expl_axi_bvalid ),
+//     .axi_bready    (expl_axi_bready ),
+//     .axi_bresp     (expl_axi_bresp  ),
 
-    .clk           (clk  ),
-    .rst_n         (rst_n) 
-  );
+//     .clk           (clk  ),
+//     .rst_n         (rst_n) 
+//   );
 
 
 
@@ -23151,38 +23151,38 @@ module e203_subsys_main(
   output axi_arvalid,
   input  axi_arready,
   output [32-1:0] axi_araddr,
-  output [3:0] axi_arcache,
-  output [2:0] axi_arprot,
-  output [1:0] axi_arlock,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
   output [1:0] axi_arburst,
-  output [3:0] axi_arlen,
+  output [7:0] axi_arlen,
   output [2:0] axi_arsize,
-  output       axi_arid,
+  output   [3:0]    axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
   output [32-1:0] axi_awaddr,
-  output [3:0] axi_awcache,
-  output [2:0] axi_awprot,
-  output [1:0] axi_awlock,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
   output [1:0] axi_awburst,
-  output [3:0] axi_awlen,
+  output [7:0] axi_awlen,
   output [2:0] axi_awsize,
-  output       axi_awid,
+  output    [3:0]   axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
-  input  axi_rid,
+  input  [3:0]axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
   output [64-1:0] axi_wdata,
   output [(64/8)-1:0] axi_wstrb,
   output axi_wlast,
-  input  axi_bid,
+  input [3:0] axi_bid,
 
   input  axi_bvalid,
   output axi_bready,
@@ -23993,31 +23993,31 @@ module e203_subsys_mems(
   output axi_arvalid,
   input  axi_arready,
   output [32-1:0] axi_araddr,
-  output [3:0] axi_arcache,
-  output [2:0] axi_arprot,
-  output [1:0] axi_arlock,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
   output [1:0] axi_arburst,
-  output [3:0] axi_arlen,
+  output [7:0] axi_arlen,
   output [2:0] axi_arsize,
-  output       axi_arid,
+  output    [3:0]   axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
   output [32-1:0] axi_awaddr,
-  output [3:0] axi_awcache,
-  output [2:0] axi_awprot,
-  output [1:0] axi_awlock,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
   output [1:0] axi_awburst,
-  output [3:0] axi_awlen,
+  output [7:0] axi_awlen,
   output [2:0] axi_awsize,
-  output       axi_awid,
+  output    [3:0]   axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
-  input  axi_rid,
+  input  [3:0]axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -24028,7 +24028,7 @@ module e203_subsys_mems(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
-  input  axi_bid,
+  input [3:0] axi_bid,
 
   input  clk,
   input  bus_rst_n,
@@ -24574,7 +24574,7 @@ sirv_gnrl_icb2axi # (
   assign  expl_axi_bvalid = axi_bvalid;
   assign  axi_bready = expl_axi_bready;
   assign  expl_axi_bresp = axi_bresp;
-  assign  expl_axi_bid = axi_bid
+  assign  expl_axi_bid = axi_bid;
 ////////////////////////////////////////////////////////////////////////////
 
 
@@ -24948,19 +24948,19 @@ end
 //assign qout = test_mode ? dnxt : qout_r;
 assign qout = qout_r;
 
-`ifndef FPGA_SOURCE//{
-`ifndef DISABLE_SV_ASSERTION//{
-//synopsys translate_off
-always_comb
-begin
-  CHECK_THE_X_VALUE:
-    assert (lden !== 1'bx) 
-    else $fatal ("\n Error: Oops, detected a X value!!! This should never happen. \n");
-end
+// `ifndef FPGA_SOURCE//{
+// `ifndef DISABLE_SV_ASSERTION//{
+// //synopsys translate_off
+// always_comb
+// begin
+//   CHECK_THE_X_VALUE:
+//     assert (lden !== 1'bx) 
+//     else $fatal ("\n Error: Oops, detected a X value!!! This should never happen. \n");
+// end
 
-//synopsys translate_on
-`endif//}
-`endif//}
+// //synopsys translate_on
+// `endif//}
+// `endif//}
     
 
 endmodule
@@ -27940,31 +27940,31 @@ module e203_soc_top(
   output axi_arvalid,
   input  axi_arready,
   output [32-1:0] axi_araddr,
-  output [3:0] axi_arcache,
-  output [2:0] axi_arprot,
-  output [1:0] axi_arlock,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
   output [1:0] axi_arburst,
-  output [3:0] axi_arlen,
+  output [7:0] axi_arlen,
   output [2:0] axi_arsize,
-  output       axi_arid,
+  output [3:0] axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
   output [32-1:0] axi_awaddr,
-  output [3:0] axi_awcache,
-  output [2:0] axi_awprot,
-  output [1:0] axi_awlock,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
   output [1:0] axi_awburst,
-  output [3:0] axi_awlen,
+  output [7:0] axi_awlen,
   output [2:0] axi_awsize,
-  output       axi_awid,
+  output  [3:0]     axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
-  input  axi_rid,
+  input  [3:0]axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -27975,7 +27975,7 @@ module e203_soc_top(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
-  input  axi_bid
+  input  [3:0]axi_bid
 
 );
 
