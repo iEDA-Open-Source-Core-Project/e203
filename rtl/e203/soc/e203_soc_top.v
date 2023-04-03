@@ -97,6 +97,7 @@ module e203_soc_top(
   output [1:0] axi_arburst,
   output [3:0] axi_arlen,
   output [2:0] axi_arsize,
+  output       axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
@@ -107,12 +108,14 @@ module e203_soc_top(
   output [1:0] axi_awburst,
   output [3:0] axi_awlen,
   output [2:0] axi_awsize,
+  output       axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
+  input  axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -122,7 +125,8 @@ module e203_soc_top(
 
   input  axi_bvalid,
   output axi_bready,
-  input  [1:0] axi_bresp
+  input  [1:0] axi_bresp,
+  input  axi_bid
 
 );
 

@@ -245,6 +245,7 @@ module e203_subsys_top(
   output [1:0] axi_arburst,
   output [3:0] axi_arlen,
   output [2:0] axi_arsize,
+  output       axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
@@ -255,12 +256,14 @@ module e203_subsys_top(
   output [1:0] axi_awburst,
   output [3:0] axi_awlen,
   output [2:0] axi_awsize,
+  output       axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
+  input  axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -271,6 +274,7 @@ module e203_subsys_top(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
+  input  axi_bid,
 
 
   input  test_iso_override,
@@ -522,6 +526,7 @@ module e203_subsys_top(
     .axi_arburst   (axi_arburst),
     .axi_arlen     (axi_arlen  ),
     .axi_arsize    (axi_arsize ),
+    .axi_arid      (axi_arid),
           
     .axi_awvalid   (axi_awvalid),
     .axi_awready   (axi_awready),
@@ -532,12 +537,14 @@ module e203_subsys_top(
     .axi_awburst   (axi_awburst),
     .axi_awlen     (axi_awlen  ),
     .axi_awsize    (axi_awsize ),
+    .axi_awid      (axi_awid),
         
     .axi_rvalid    (axi_rvalid ),
     .axi_rready    (axi_rready ),
     .axi_rdata     (axi_rdata  ),
     .axi_rresp     (axi_rresp  ),
     .axi_rlast     (axi_rlast  ),
+    .axi_rid       (axi_rid),
         
     .axi_wvalid    (axi_wvalid ),
     .axi_wready    (axi_wready ),
@@ -548,6 +555,7 @@ module e203_subsys_top(
     .axi_bvalid    (axi_bvalid ),
     .axi_bready    (axi_bready ),
     .axi_bresp     (axi_bresp  ),
+    .axi_bid       (axi_bid),
 
     .test_mode     (test_mode), 
     .ls_clk        (lfextclk), 

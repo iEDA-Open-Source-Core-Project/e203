@@ -89,6 +89,7 @@ module e203_subsys_mems(
   output [1:0] axi_arburst,
   output [3:0] axi_arlen,
   output [2:0] axi_arsize,
+  output       axi_arid,
 
   output axi_awvalid,
   input  axi_awready,
@@ -99,12 +100,14 @@ module e203_subsys_mems(
   output [1:0] axi_awburst,
   output [3:0] axi_awlen,
   output [2:0] axi_awsize,
+  output       axi_awid,
 
   input  axi_rvalid,
   output axi_rready,
   input  [64-1:0] axi_rdata,
   input  [1:0] axi_rresp,
   input  axi_rlast,
+  input  axi_rid,
 
   output axi_wvalid,
   input  axi_wready,
@@ -115,6 +118,7 @@ module e203_subsys_mems(
   input  axi_bvalid,
   output axi_bready,
   input  [1:0] axi_bresp,
+  input  axi_bid,
 
   input  clk,
   input  bus_rst_n,
@@ -547,6 +551,15 @@ module e203_subsys_mems(
   .rst_n                  (rst_n )                 
   );
 
+  wire arid;
+  wire awid;
+  wire rid;
+  wire bid;
+  assign arid = 1'b0;
+  assign awid = 1'b0;
+  // assign rid = 1'b0;
+  // assign bid = 1'b0;
+
 sirv_gnrl_icb2axi # (
   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
                     //   User can change it to 0 if dont care
@@ -578,6 +591,7 @@ sirv_gnrl_icb2axi # (
     .o_axi_arburst   (expl_axi_arburst),
     .o_axi_arlen     (expl_axi_arlen  ),
     .o_axi_arsize    (expl_axi_arsize ),
+    .o_axi_arid      (expl_axi_arid  ),
                       
     .o_axi_awvalid   (expl_axi_awvalid),
     .o_axi_awready   (expl_axi_awready),
@@ -588,12 +602,14 @@ sirv_gnrl_icb2axi # (
     .o_axi_awburst   (expl_axi_awburst),
     .o_axi_awlen     (expl_axi_awlen  ),
     .o_axi_awsize    (expl_axi_awsize ),
+    .o_axi_awid      (expl_axi_awid  ),
                      
     .o_axi_rvalid    (expl_axi_rvalid ),
     .o_axi_rready    (expl_axi_rready ),
     .o_axi_rdata     (expl_axi_rdata  ),
     .o_axi_rresp     (expl_axi_rresp  ),
     .o_axi_rlast     (expl_axi_rlast  ),
+    .o_axi_rid       (expl_axi_rid  ),
                     
     .o_axi_wvalid    (expl_axi_wvalid ),
     .o_axi_wready    (expl_axi_wready ),
@@ -604,12 +620,14 @@ sirv_gnrl_icb2axi # (
     .o_axi_bvalid    (expl_axi_bvalid ),
     .o_axi_bready    (expl_axi_bready ),
     .o_axi_bresp     (expl_axi_bresp  ),
+    .o_axi_bid      (expl_axi_bid  ),
 
     .clk           (clk  ),
     .rst_n         (bus_rst_n) 
   );
 
   assign  axi_arvalid = expl_axi_arvalid;
+  assign  axi_arid = expl_axi_arid;
   assign  expl_axi_arready = axi_arready;
   assign  axi_araddr = expl_axi_araddr;
   assign  axi_arcache = expl_axi_arcache;
@@ -620,6 +638,7 @@ sirv_gnrl_icb2axi # (
   assign  axi_arsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_arsize;
 
   assign  axi_awvalid = expl_axi_awvalid;
+  assign  axi_awid = expl_axi_awid;
   assign  expl_axi_awready = axi_awready;
   assign  axi_awaddr = expl_axi_awaddr;
   assign  axi_awcache = expl_axi_awcache;
@@ -630,6 +649,7 @@ sirv_gnrl_icb2axi # (
   assign  axi_awsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_awsize;
 
   assign  expl_axi_rvalid = axi_rvalid;
+  assign  expl_axi_rid = axi_rid;
   assign  axi_rready = expl_axi_rready;
   assign  expl_axi_rdata = axi_rdata;
   assign  expl_axi_rresp = axi_rresp;
@@ -644,6 +664,7 @@ sirv_gnrl_icb2axi # (
   assign  expl_axi_bvalid = axi_bvalid;
   assign  axi_bready = expl_axi_bready;
   assign  expl_axi_bresp = axi_bresp;
+  assign  expl_axi_bid = axi_bid
 ////////////////////////////////////////////////////////////////////////////
 
 
