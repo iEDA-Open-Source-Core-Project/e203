@@ -92,21 +92,21 @@ module e203_soc_axi_top(
   wire expl_axi_arvalid;
   wire expl_axi_arready;
   wire [32-1:0] expl_axi_araddr;
-  wire [3:0] expl_axi_arcache;
-  wire [2:0] expl_axi_arprot;
-  wire [1:0] expl_axi_arlock;
+  wire [0:0] expl_axi_arcache;
+  wire [0:0] expl_axi_arprot;
+  wire [0:0] expl_axi_arlock;
   wire [1:0] expl_axi_arburst;
-  wire [3:0] expl_axi_arlen;
+  wire [7:0] expl_axi_arlen;
   wire [2:0] expl_axi_arsize;
 
   wire expl_axi_awvalid;
   wire expl_axi_awready;
   wire [32-1:0] expl_axi_awaddr;
-  wire [3:0] expl_axi_awcache;
-  wire [2:0] expl_axi_awprot;
-  wire [1:0] expl_axi_awlock;
+  wire [0:0] expl_axi_awcache;
+  wire [0:0] expl_axi_awprot;
+  wire [0:0] expl_axi_awlock;
   wire [1:0] expl_axi_awburst;
-  wire [3:0] expl_axi_awlen;
+  wire [7:0] expl_axi_awlen;
   wire [2:0] expl_axi_awsize;
 
   wire expl_axi_rvalid;
