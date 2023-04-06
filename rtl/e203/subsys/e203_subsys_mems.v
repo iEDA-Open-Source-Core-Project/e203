@@ -67,7 +67,7 @@ module e203_subsys_mems(
   input  [`E203_XLEN-1:0]        qspi0_ro_icb_rsp_rdata,
 
 
-    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////   Debug Module
   output                         dm_icb_cmd_valid,
   input                          dm_icb_cmd_ready,
   output [`E203_ADDR_SIZE-1:0]   dm_icb_cmd_addr, 

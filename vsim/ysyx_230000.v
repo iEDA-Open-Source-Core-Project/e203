@@ -1261,7 +1261,8 @@ module e203_ifu_ift2icb(
 // ===========================================================================
 
   `ifdef E203_HAS_ITCM //{
-  wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); 
+  // wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); 
+  wire ifu_req_pc2itcm = 1'b0;
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
@@ -1769,8 +1770,8 @@ module e203_ifu_ift2icb(
   // Dispatch the ICB CMD and RSP Channel to ITCM and System Memory
   //   according to the address range
   `ifdef E203_HAS_ITCM //{
-  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
-
+  // assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
+  assign ifu_icb_cmd2itcm = 1'b0;
   assign ifu2itcm_icb_cmd_valid = ifu_icb_cmd_valid & ifu_icb_cmd2itcm;
   assign ifu2itcm_icb_cmd_addr = ifu_icb_cmd_addr[`E203_ITCM_ADDR_WIDTH-1:0];
 
@@ -5555,17 +5556,20 @@ module e203_biu(
                            `endif//}
                            } = splt_bus_icb_rsp_ready;
 
-  wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
+  // wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
+  wire buf_icb_cmd_ppi = 1'b0; // disable ppi
   wire buf_icb_sel_ppi = buf_icb_cmd_ppi & (~buf_icb_cmd_ifu);
 
   wire buf_icb_cmd_clint = clint_icb_enable & (buf_icb_cmd_addr[`E203_CLINT_BASE_REGION] ==  clint_region_indic[`E203_CLINT_BASE_REGION]);
   wire buf_icb_sel_clint = buf_icb_cmd_clint & (~buf_icb_cmd_ifu);
 
-  wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
+  // wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
+  wire buf_icb_cmd_plic = 1'b0; // disable plic
   wire buf_icb_sel_plic = buf_icb_cmd_plic & (~buf_icb_cmd_ifu);
 
   `ifdef E203_HAS_FIO //{
-  wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
+  // wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
+  wire buf_icb_cmd_fio = 1'b0; // disable fio
   wire buf_icb_sel_fio = buf_icb_cmd_fio & (~buf_icb_cmd_ifu);
   `endif//}
 
@@ -16142,12 +16146,14 @@ module e203_lsu_ctrl(
   //  * The FIFO will be pushed when a ICB CMD handshaked
   //  * The FIFO will be poped  when a ICB RSP handshaked
   `ifdef E203_HAS_ITCM //{
-  wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
+  // wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
+  wire arbt_icb_cmd_itcm = 1'b0;
   `else//}{
   wire arbt_icb_cmd_itcm = 1'b0;
   `endif//}
   `ifdef E203_HAS_DTCM //{
-  wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
+  // wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
+  wire arbt_icb_cmd_dtcm = 1'b0;
   `else//}{
   wire arbt_icb_cmd_dtcm = 1'b0;
   `endif//}
@@ -23938,7 +23944,6 @@ endmodule
 
 
 
-
 module e203_subsys_mems(
   input                          mem_icb_cmd_valid,
   output                         mem_icb_cmd_ready,
@@ -23978,7 +23983,7 @@ module e203_subsys_mems(
   input  [`E203_XLEN-1:0]        qspi0_ro_icb_rsp_rdata,
 
 
-    //////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////   Debug Module
   output                         dm_icb_cmd_valid,
   input                          dm_icb_cmd_ready,
   output [`E203_ADDR_SIZE-1:0]   dm_icb_cmd_addr, 
@@ -24035,30 +24040,28 @@ module e203_subsys_mems(
   input  rst_n
   );
 
+  assign sysmem_icb_cmd_valid = 1'b0;
+  assign sysmem_icb_cmd_addr = 32'h0;
+  assign sysmem_icb_cmd_read = 1'b0;
+  assign sysmem_icb_cmd_wdata = 64'h0;
+  assign sysmem_icb_cmd_wmask = 8'h0;
+  assign sysmem_icb_rsp_ready = 1'b0;
+
+  assign qspi0_ro_icb_cmd_valid = 1'b0;
+  assign qspi0_ro_icb_cmd_addr = 32'h0;
+  assign qspi0_ro_icb_cmd_read = 1'b0;
+  assign qspi0_ro_icb_cmd_wdata = 64'h0;
+  assign qspi0_ro_icb_cmd_wmask = 8'h0;
+  assign qspi0_ro_icb_rsp_ready = 1'b0;
+
+  assign dm_icb_cmd_valid = 1'b0;
+  assign dm_icb_cmd_addr = 32'h0;
+  assign dm_icb_cmd_read = 1'b0;
+  assign dm_icb_cmd_wdata = 64'h0;
+  assign dm_icb_cmd_wmask = 8'h0;
+  assign dm_icb_rsp_ready = 1'b0;
 
 
-      
-  wire                         mrom_icb_cmd_valid;
-  wire                         mrom_icb_cmd_ready;
-  wire [`E203_ADDR_SIZE-1:0]   mrom_icb_cmd_addr; 
-  wire                         mrom_icb_cmd_read; 
-  
-  wire                         mrom_icb_rsp_valid;
-  wire                         mrom_icb_rsp_ready;
-  wire                         mrom_icb_rsp_err  ;
-  wire [`E203_XLEN-1:0]        mrom_icb_rsp_rdata;
-
-  // wire                     expl_axi_icb_cmd_valid;
-  // wire                     expl_axi_icb_cmd_ready;
-  // wire [32-1:0]            expl_axi_icb_cmd_addr;
-  // wire                     expl_axi_icb_cmd_read;
-  // wire [32-1:0]            expl_axi_icb_cmd_wdata;
-  // wire [4 -1:0]            expl_axi_icb_cmd_wmask;
-  //
-  // wire                     expl_axi_icb_rsp_valid;
-  // wire                     expl_axi_icb_rsp_ready;
-  // wire [32-1:0]            expl_axi_icb_rsp_rdata;
-  // wire                     expl_axi_icb_rsp_err;
 //32 bits width icb
   wire                     expl_n2w_axi_icb_cmd_valid;
   wire                     expl_n2w_axi_icb_cmd_ready;
@@ -24071,6 +24074,18 @@ module e203_subsys_mems(
   wire                     expl_n2w_axi_icb_rsp_ready;
   wire [32-1:0]            expl_n2w_axi_icb_rsp_rdata;
   wire                     expl_n2w_axi_icb_rsp_err;
+
+  assign expl_n2w_axi_icb_cmd_valid = mem_icb_cmd_valid;
+  assign mem_icb_cmd_ready = expl_n2w_axi_icb_cmd_ready;
+  assign expl_n2w_axi_icb_cmd_addr = mem_icb_cmd_addr;
+  assign expl_n2w_axi_icb_cmd_read = mem_icb_cmd_read;
+  assign expl_n2w_axi_icb_cmd_wdata = mem_icb_cmd_wdata;
+  assign expl_n2w_axi_icb_cmd_wmask = mem_icb_cmd_wmask;
+
+  assign mem_icb_rsp_valid = expl_n2w_axi_icb_rsp_valid;
+  assign expl_n2w_axi_icb_rsp_ready = mem_icb_rsp_ready;
+  assign mem_icb_rsp_rdata = expl_n2w_axi_icb_rsp_rdata;
+  assign mem_icb_rsp_err = expl_n2w_axi_icb_rsp_err;
 // 64 bits width icb
   wire                     expl_axi_icb_cmd_valid;
   wire                     expl_axi_icb_cmd_ready;
@@ -24084,287 +24099,7 @@ module e203_subsys_mems(
   wire [64-1:0]            expl_axi_icb_rsp_rdata;
   wire                     expl_axi_icb_rsp_err;
 
-
- localparam MROM_AW = 12  ;
- localparam MROM_DP = 1024;
-  // There are several slaves for Mem bus, including:
-  //  * DM        : 0x0000 0000 -- 0x0000 0FFF
-  //  * MROM      : 0x0000 1000 -- 0x0000 1FFF
-  //  * QSPI0-RO  : 0x2000 0000 -- 0x3FFF FFFF
-  //  * SysMem    : 0x8000 0000 -- 0xFFFF FFFF
-
-  sirv_icb1to8_bus # (
-  .ICB_FIFO_DP        (2),// We add a ping-pong buffer here to cut down the timing path
-  .ICB_FIFO_CUT_READY (1),// We configure it to cut down the back-pressure ready signal
-  .AW                   (32),
-  .DW                   (`E203_XLEN),
-  .SPLT_FIFO_OUTS_NUM   (1),// The Mem only allow 1 oustanding
-  .SPLT_FIFO_CUT_READY  (1),// The Mem always cut ready
-  //  * DM        : 0x0000 0000 -- 0x0000 0FFF
-  .O0_BASE_ADDR       (32'h0000_0000),       
-  .O0_BASE_REGION_LSB (12),
-  //  * MROM      : 0x0000 1000 -- 0x0000 1FFF
-  .O1_BASE_ADDR       (32'h0000_1000),       
-  .O1_BASE_REGION_LSB (12),
-  //  * Not used  : 0x0002 0000 -- 0x0003 FFFF
-  .O2_BASE_ADDR       (32'h0002_0000),       
-  .O2_BASE_REGION_LSB (17),
-  //  * QSPI0-RO  : 0x2000 0000 -- 0x3FFF FFFF
-  .O3_BASE_ADDR       (32'h2000_0000),       
-  .O3_BASE_REGION_LSB (29),
-  //  * SysMem    : 0x8000 0000 -- 0xFFFF FFFF
-  //    Actually since the 0xFxxx xxxx have been occupied by FIO, 
-  //    sysmem have no chance to access it
-  .O4_BASE_ADDR       (32'h8000_0000),       
-  .O4_BASE_REGION_LSB (31),
-
-      // * Here is an example AXI Peripheral
-  .O5_BASE_ADDR       (32'h4000_0000),       
-  .O5_BASE_REGION_LSB (28),
-  
-      // Not used
-  .O6_BASE_ADDR       (32'h0000_0000),       
-  .O6_BASE_REGION_LSB (0),
-  
-      // Not used
-  .O7_BASE_ADDR       (32'h0000_0000),       
-  .O7_BASE_REGION_LSB (0)
-
-  )u_sirv_mem_fab(
-
-    .i_icb_cmd_valid  (mem_icb_cmd_valid),
-    .i_icb_cmd_ready  (mem_icb_cmd_ready),
-    .i_icb_cmd_addr   (mem_icb_cmd_addr ),
-    .i_icb_cmd_read   (mem_icb_cmd_read ),
-    .i_icb_cmd_wdata  (mem_icb_cmd_wdata),
-    .i_icb_cmd_wmask  (mem_icb_cmd_wmask),
-    .i_icb_cmd_lock   (1'b0 ),
-    .i_icb_cmd_excl   (1'b0 ),
-    .i_icb_cmd_size   (2'b0 ),
-    .i_icb_cmd_burst  (2'b0),
-    .i_icb_cmd_beat   (2'b0 ),
-    
-    .i_icb_rsp_valid  (mem_icb_rsp_valid),
-    .i_icb_rsp_ready  (mem_icb_rsp_ready),
-    .i_icb_rsp_err    (mem_icb_rsp_err  ),
-    .i_icb_rsp_excl_ok(),
-    .i_icb_rsp_rdata  (mem_icb_rsp_rdata),
-    
-  //  * DM
-    .o0_icb_enable     (1'b1),
-
-    .o0_icb_cmd_valid  (dm_icb_cmd_valid),
-    .o0_icb_cmd_ready  (dm_icb_cmd_ready),
-    .o0_icb_cmd_addr   (dm_icb_cmd_addr ),
-    .o0_icb_cmd_read   (dm_icb_cmd_read ),
-    .o0_icb_cmd_wdata  (dm_icb_cmd_wdata),
-    .o0_icb_cmd_wmask  (),
-    .o0_icb_cmd_lock   (),
-    .o0_icb_cmd_excl   (),
-    .o0_icb_cmd_size   (),
-    .o0_icb_cmd_burst  (),
-    .o0_icb_cmd_beat   (),
-    
-    .o0_icb_rsp_valid  (dm_icb_rsp_valid),
-    .o0_icb_rsp_ready  (dm_icb_rsp_ready),
-    .o0_icb_rsp_err    (1'b0),
-    .o0_icb_rsp_excl_ok(1'b0),
-    .o0_icb_rsp_rdata  (dm_icb_rsp_rdata),
-
-  //  * MROM      
-    .o1_icb_enable     (1'b1),
-
-    .o1_icb_cmd_valid  (mrom_icb_cmd_valid),
-    .o1_icb_cmd_ready  (mrom_icb_cmd_ready),
-    .o1_icb_cmd_addr   (mrom_icb_cmd_addr ),
-    .o1_icb_cmd_read   (mrom_icb_cmd_read ),
-    .o1_icb_cmd_wdata  (),
-    .o1_icb_cmd_wmask  (),
-    .o1_icb_cmd_lock   (),
-    .o1_icb_cmd_excl   (),
-    .o1_icb_cmd_size   (),
-    .o1_icb_cmd_burst  (),
-    .o1_icb_cmd_beat   (),
-    
-    .o1_icb_rsp_valid  (mrom_icb_rsp_valid),
-    .o1_icb_rsp_ready  (mrom_icb_rsp_ready),
-    .o1_icb_rsp_err    (mrom_icb_rsp_err),
-    .o1_icb_rsp_excl_ok(1'b0  ),
-    .o1_icb_rsp_rdata  (mrom_icb_rsp_rdata),
-
-  //  * Not used    
-    .o2_icb_enable     (1'b0),
-
-    .o2_icb_cmd_valid  (),
-    .o2_icb_cmd_ready  (1'b0),
-    .o2_icb_cmd_addr   (),
-    .o2_icb_cmd_read   (),
-    .o2_icb_cmd_wdata  (),
-    .o2_icb_cmd_wmask  (),
-    .o2_icb_cmd_lock   (),
-    .o2_icb_cmd_excl   (),
-    .o2_icb_cmd_size   (),
-    .o2_icb_cmd_burst  (),
-    .o2_icb_cmd_beat   (),
-    
-    .o2_icb_rsp_valid  (1'b0),
-    .o2_icb_rsp_ready  (),
-    .o2_icb_rsp_err    (1'b0  ),
-    .o2_icb_rsp_excl_ok(1'b0  ),
-    .o2_icb_rsp_rdata  (`E203_XLEN'b0),
-
-
-  //  * QSPI0-RO  
-    .o3_icb_enable     (1'b1),
-
-    .o3_icb_cmd_valid  (qspi0_ro_icb_cmd_valid),
-    .o3_icb_cmd_ready  (qspi0_ro_icb_cmd_ready),
-    .o3_icb_cmd_addr   (qspi0_ro_icb_cmd_addr ),
-    .o3_icb_cmd_read   (qspi0_ro_icb_cmd_read ),
-    .o3_icb_cmd_wdata  (qspi0_ro_icb_cmd_wdata),
-    .o3_icb_cmd_wmask  (),
-    .o3_icb_cmd_lock   (),
-    .o3_icb_cmd_excl   (),
-    .o3_icb_cmd_size   (),
-    .o3_icb_cmd_burst  (),
-    .o3_icb_cmd_beat   (),
-    
-    .o3_icb_rsp_valid  (qspi0_ro_icb_rsp_valid),
-    .o3_icb_rsp_ready  (qspi0_ro_icb_rsp_ready),
-    .o3_icb_rsp_err    (qspi0_ro_icb_rsp_err),
-    .o3_icb_rsp_excl_ok(1'b0  ),
-    .o3_icb_rsp_rdata  (qspi0_ro_icb_rsp_rdata),
-
-
-  //  * SysMem
-    .o4_icb_enable     (1'b1),
-
-    .o4_icb_cmd_valid  (sysmem_icb_cmd_valid),
-    .o4_icb_cmd_ready  (sysmem_icb_cmd_ready),
-    .o4_icb_cmd_addr   (sysmem_icb_cmd_addr ),
-    .o4_icb_cmd_read   (sysmem_icb_cmd_read ),
-    .o4_icb_cmd_wdata  (sysmem_icb_cmd_wdata),
-    .o4_icb_cmd_wmask  (sysmem_icb_cmd_wmask),
-    .o4_icb_cmd_lock   (),
-    .o4_icb_cmd_excl   (),
-    .o4_icb_cmd_size   (),
-    .o4_icb_cmd_burst  (),
-    .o4_icb_cmd_beat   (),
-    
-    .o4_icb_rsp_valid  (sysmem_icb_rsp_valid),
-    .o4_icb_rsp_ready  (sysmem_icb_rsp_ready),
-    .o4_icb_rsp_err    (sysmem_icb_rsp_err    ),
-    .o4_icb_rsp_excl_ok(1'b0),
-    .o4_icb_rsp_rdata  (sysmem_icb_rsp_rdata),
-
-   //  * Example AXI    
-    .o5_icb_enable     (1'b1),
-
-    .o5_icb_cmd_valid  (expl_n2w_axi_icb_cmd_valid),
-    .o5_icb_cmd_ready  (expl_n2w_axi_icb_cmd_ready),
-    .o5_icb_cmd_addr   (expl_n2w_axi_icb_cmd_addr ),
-    .o5_icb_cmd_read   (expl_n2w_axi_icb_cmd_read ),
-    .o5_icb_cmd_wdata  (expl_n2w_axi_icb_cmd_wdata),
-    .o5_icb_cmd_wmask  (expl_n2w_axi_icb_cmd_wmask),
-    .o5_icb_cmd_lock   (),
-    .o5_icb_cmd_excl   (),
-    .o5_icb_cmd_size   (),
-    .o5_icb_cmd_burst  (),
-    .o5_icb_cmd_beat   (),
-    
-    .o5_icb_rsp_valid  (expl_n2w_axi_icb_rsp_valid),
-    .o5_icb_rsp_ready  (expl_n2w_axi_icb_rsp_ready),
-    .o5_icb_rsp_err    (expl_n2w_axi_icb_rsp_err),
-    .o5_icb_rsp_excl_ok(1'b0  ),
-    .o5_icb_rsp_rdata  (expl_n2w_axi_icb_rsp_rdata),
-    // .o5_icb_enable     (1'b1),
-
-    // .o5_icb_cmd_valid  (expl_axi_icb_cmd_valid),
-    // .o5_icb_cmd_ready  (expl_axi_icb_cmd_ready),
-    // .o5_icb_cmd_addr   (expl_axi_icb_cmd_addr ),
-    // .o5_icb_cmd_read   (expl_axi_icb_cmd_read ),
-    // .o5_icb_cmd_wdata  (expl_axi_icb_cmd_wdata),
-    // .o5_icb_cmd_wmask  (expl_axi_icb_cmd_wmask),
-    // .o5_icb_cmd_lock   (),
-    // .o5_icb_cmd_excl   (),
-    // .o5_icb_cmd_size   (),
-    // .o5_icb_cmd_burst  (),
-    // .o5_icb_cmd_beat   (),
-    
-    // .o5_icb_rsp_valid  (expl_axi_icb_rsp_valid),
-    // .o5_icb_rsp_ready  (expl_axi_icb_rsp_ready),
-    // .o5_icb_rsp_err    (expl_axi_icb_rsp_err),
-    // .o5_icb_rsp_excl_ok(1'b0  ),
-    // .o5_icb_rsp_rdata  (expl_axi_icb_rsp_rdata),
-
-
-        //  * Not used
-    .o6_icb_enable     (1'b0),
-
-    .o6_icb_cmd_valid  (),
-    .o6_icb_cmd_ready  (1'b0),
-    .o6_icb_cmd_addr   (),
-    .o6_icb_cmd_read   (),
-    .o6_icb_cmd_wdata  (),
-    .o6_icb_cmd_wmask  (),
-    .o6_icb_cmd_lock   (),
-    .o6_icb_cmd_excl   (),
-    .o6_icb_cmd_size   (),
-    .o6_icb_cmd_burst  (),
-    .o6_icb_cmd_beat   (),
-    
-    .o6_icb_rsp_valid  (1'b0),
-    .o6_icb_rsp_ready  (),
-    .o6_icb_rsp_err    (1'b0  ),
-    .o6_icb_rsp_excl_ok(1'b0  ),
-    .o6_icb_rsp_rdata  (`E203_XLEN'b0),
-
-        //  * Not used
-    .o7_icb_enable     (1'b0),
-
-    .o7_icb_cmd_valid  (),
-    .o7_icb_cmd_ready  (1'b0),
-    .o7_icb_cmd_addr   (),
-    .o7_icb_cmd_read   (),
-    .o7_icb_cmd_wdata  (),
-    .o7_icb_cmd_wmask  (),
-    .o7_icb_cmd_lock   (),
-    .o7_icb_cmd_excl   (),
-    .o7_icb_cmd_size   (),
-    .o7_icb_cmd_burst  (),
-    .o7_icb_cmd_beat   (),
-    
-    .o7_icb_rsp_valid  (1'b0),
-    .o7_icb_rsp_ready  (),
-    .o7_icb_rsp_err    (1'b0  ),
-    .o7_icb_rsp_excl_ok(1'b0  ),
-    .o7_icb_rsp_rdata  (`E203_XLEN'b0),
-
-    .clk           (clk  ),
-    .rst_n         (bus_rst_n) 
-  );
-
-  sirv_mrom_top #(
-    .AW(MROM_AW),
-    .DW(32),
-    .DP(MROM_DP)
-  )u_sirv_mrom_top(
-
-    .rom_icb_cmd_valid  (mrom_icb_cmd_valid),
-    .rom_icb_cmd_ready  (mrom_icb_cmd_ready),
-    .rom_icb_cmd_addr   (mrom_icb_cmd_addr [MROM_AW-1:0]),
-    .rom_icb_cmd_read   (mrom_icb_cmd_read ),
-    
-    .rom_icb_rsp_valid  (mrom_icb_rsp_valid),
-    .rom_icb_rsp_ready  (mrom_icb_rsp_ready),
-    .rom_icb_rsp_err    (mrom_icb_rsp_err  ),
-    .rom_icb_rsp_rdata  (mrom_icb_rsp_rdata),
-
-    .clk           (clk  ),
-    .rst_n         (rst_n) 
-  );
-
-      // * Here is an example AXI Peripheral
+  // * Here is an example AXI Peripheral
   wire expl_axi_arvalid;
   wire expl_axi_arready;
   wire [`E203_ADDR_SIZE-1:0] expl_axi_araddr;
@@ -24410,8 +24145,8 @@ module e203_subsys_mems(
 
 ////////////////////////////////////////////////////////////////////////////
   sirv_gnrl_icb_n2w # (
-  // .FIFO_OUTS_NUM   (`E203_ITCM_OUTS_NUM),
-  // .FIFO_CUT_READY  (0),
+  .FIFO_OUTS_NUM   (`E203_ITCM_OUTS_NUM),
+  .FIFO_CUT_READY  (0),
   .USR_W      (1),
   .AW         (`E203_AXI_ADDR_WIDTH),
   .X_W        (32),
@@ -24460,16 +24195,10 @@ module e203_subsys_mems(
   .clk                    (clk   )                  ,
   .rst_n                  (rst_n )                 
   );
-
-  wire arid;
-  wire awid;
-  wire rid;
-  wire bid;
-  assign arid = 1'b0;
-  assign awid = 1'b0;
-  // assign rid = 1'b0;
-  // assign bid = 1'b0;
-
+// arid and awid are not generated by icb
+// if arid or awid is in state z,we can not get response from axi slave,so we need to generate them later
+// rid and bid are not used by icb2axi
+// because we only have one master and one slave, so we do not care about rid and bid
 sirv_gnrl_icb2axi # (
   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
                     //   User can change it to 0 if dont care
@@ -24501,7 +24230,6 @@ sirv_gnrl_icb2axi # (
     .o_axi_arburst   (expl_axi_arburst),
     .o_axi_arlen     (expl_axi_arlen  ),
     .o_axi_arsize    (expl_axi_arsize ),
-    .o_axi_arid      (expl_axi_arid  ),
                       
     .o_axi_awvalid   (expl_axi_awvalid),
     .o_axi_awready   (expl_axi_awready),
@@ -24512,14 +24240,12 @@ sirv_gnrl_icb2axi # (
     .o_axi_awburst   (expl_axi_awburst),
     .o_axi_awlen     (expl_axi_awlen  ),
     .o_axi_awsize    (expl_axi_awsize ),
-    .o_axi_awid      (expl_axi_awid  ),
                      
     .o_axi_rvalid    (expl_axi_rvalid ),
     .o_axi_rready    (expl_axi_rready ),
     .o_axi_rdata     (expl_axi_rdata  ),
     .o_axi_rresp     (expl_axi_rresp  ),
     .o_axi_rlast     (expl_axi_rlast  ),
-    .o_axi_rid       (expl_axi_rid  ),
                     
     .o_axi_wvalid    (expl_axi_wvalid ),
     .o_axi_wready    (expl_axi_wready ),
@@ -24530,36 +24256,36 @@ sirv_gnrl_icb2axi # (
     .o_axi_bvalid    (expl_axi_bvalid ),
     .o_axi_bready    (expl_axi_bready ),
     .o_axi_bresp     (expl_axi_bresp  ),
-    .o_axi_bid      (expl_axi_bid  ),
 
     .clk           (clk  ),
     .rst_n         (bus_rst_n) 
   );
 
   assign  axi_arvalid = expl_axi_arvalid;
-  assign  axi_arid = expl_axi_arid;
   assign  expl_axi_arready = axi_arready;
   assign  axi_araddr = expl_axi_araddr;
-  assign  axi_arcache = expl_axi_arcache;
-  assign  axi_arprot = expl_axi_arprot;
-  assign  axi_arlock = expl_axi_arlock;
-  assign  axi_arburst = expl_axi_arburst;
-  assign  axi_arlen = expl_axi_arlen;
-  assign  axi_arsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_arsize;
+  assign  axi_arcache   = 'd0;
+  assign  axi_arprot    = 'd0;
+  assign  axi_arlock    = 'd0;
+  assign  axi_arburst   = 'd1;
+  assign  axi_arlen     = 'd0;
+  assign  axi_arid      = 'd0;               // force arid to 0
+  // force arsize <= 3'b010, because some devices in iEDA only support 32-bit access, i.e spi_flash
+  assign  axi_arsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010;
 
   assign  axi_awvalid = expl_axi_awvalid;
-  assign  axi_awid = expl_axi_awid;
   assign  expl_axi_awready = axi_awready;
   assign  axi_awaddr = expl_axi_awaddr;
-  assign  axi_awcache = expl_axi_awcache;
-  assign  axi_awprot = expl_axi_awprot;
-  assign  axi_awlock = expl_axi_awlock;
-  assign  axi_awburst = expl_axi_awburst;
-  assign  axi_awlen = expl_axi_awlen;
-  assign  axi_awsize = (expl_axi_arsize<3'b010)?expl_axi_arsize:3'b010; //expl_axi_awsize;
+  assign  axi_awcache   = 'd0;
+  assign  axi_awprot    = 'd0;
+  assign  axi_awlock    = 'd0;
+  assign  axi_awburst   = 'd1;
+  assign  axi_awlen     = 'd0;
+  assign  axi_awid      = 'd0;               // force awid to 0
+  // force awsize <= 3'b010, , because some devices in iEDA only support 32-bit access, i.e spi_flash
+  assign  axi_awsize = (expl_axi_awsize<3'b010)?expl_axi_awsize:3'b010;
 
   assign  expl_axi_rvalid = axi_rvalid;
-  assign  expl_axi_rid = axi_rid;
   assign  axi_rready = expl_axi_rready;
   assign  expl_axi_rdata = axi_rdata;
   assign  expl_axi_rresp = axi_rresp;
@@ -24574,120 +24300,10 @@ sirv_gnrl_icb2axi # (
   assign  expl_axi_bvalid = axi_bvalid;
   assign  axi_bready = expl_axi_bready;
   assign  expl_axi_bresp = axi_bresp;
-  assign  expl_axi_bid = axi_bid;
-////////////////////////////////////////////////////////////////////////////
-
-
-
-// sirv_gnrl_icb2axi # (
-//   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
-//                     //   User can change it to 0 if dont care
-//   .AXI_FIFO_CUT_READY (1), // This is to cut the back-pressure signal if you set as 1
-//   .AW   (32),
-//   .FIFO_OUTS_NUM (4),// We only allow 4 oustandings at most for mem, user can configure it to any value
-//   .FIFO_CUT_READY(1),
-//   .DW   (`E203_XLEN) 
-// ) u_expl_axi_icb2axi(
-//     .i_icb_cmd_valid (expl_axi_icb_cmd_valid),
-//     .i_icb_cmd_ready (expl_axi_icb_cmd_ready),
-//     .i_icb_cmd_addr  (expl_axi_icb_cmd_addr ),
-//     .i_icb_cmd_read  (expl_axi_icb_cmd_read ),
-//     .i_icb_cmd_wdata (expl_axi_icb_cmd_wdata),
-//     .i_icb_cmd_wmask (expl_axi_icb_cmd_wmask),
-//     .i_icb_cmd_size  (),
-    
-//     .i_icb_rsp_valid (expl_axi_icb_rsp_valid),
-//     .i_icb_rsp_ready (expl_axi_icb_rsp_ready),
-//     .i_icb_rsp_rdata (expl_axi_icb_rsp_rdata),
-//     .i_icb_rsp_err   (expl_axi_icb_rsp_err),
-
-//     .o_axi_arvalid   (expl_axi_arvalid),
-//     .o_axi_arready   (expl_axi_arready),
-//     .o_axi_araddr    (expl_axi_araddr ),
-//     .o_axi_arcache   (expl_axi_arcache),
-//     .o_axi_arprot    (expl_axi_arprot ),
-//     .o_axi_arlock    (expl_axi_arlock ),
-//     .o_axi_arburst   (expl_axi_arburst),
-//     .o_axi_arlen     (expl_axi_arlen  ),
-//     .o_axi_arsize    (expl_axi_arsize ),
-                      
-//     .o_axi_awvalid   (expl_axi_awvalid),
-//     .o_axi_awready   (expl_axi_awready),
-//     .o_axi_awaddr    (expl_axi_awaddr ),
-//     .o_axi_awcache   (expl_axi_awcache),
-//     .o_axi_awprot    (expl_axi_awprot ),
-//     .o_axi_awlock    (expl_axi_awlock ),
-//     .o_axi_awburst   (expl_axi_awburst),
-//     .o_axi_awlen     (expl_axi_awlen  ),
-//     .o_axi_awsize    (expl_axi_awsize ),
-                     
-//     .o_axi_rvalid    (expl_axi_rvalid ),
-//     .o_axi_rready    (expl_axi_rready ),
-//     .o_axi_rdata     (expl_axi_rdata  ),
-//     .o_axi_rresp     (expl_axi_rresp  ),
-//     .o_axi_rlast     (expl_axi_rlast  ),
-                    
-//     .o_axi_wvalid    (expl_axi_wvalid ),
-//     .o_axi_wready    (expl_axi_wready ),
-//     .o_axi_wdata     (expl_axi_wdata  ),
-//     .o_axi_wstrb     (expl_axi_wstrb  ),
-//     .o_axi_wlast     (expl_axi_wlast  ),
-                   
-//     .o_axi_bvalid    (expl_axi_bvalid ),
-//     .o_axi_bready    (expl_axi_bready ),
-//     .o_axi_bresp     (expl_axi_bresp  ),
-
-//     .clk           (clk  ),
-//     .rst_n         (bus_rst_n) 
-//   );
-
-// sirv_expl_axi_slv # (
-//   .AW   (32),
-//   .DW   (64) 
-//   // .DW   (`E203_XLEN) 
-// ) u_perips_expl_axi_slv (
-//     .axi_arvalid   (expl_axi_arvalid),
-//     .axi_arready   (expl_axi_arready),
-//     .axi_araddr    (expl_axi_araddr ),
-//     .axi_arcache   (expl_axi_arcache),
-//     .axi_arprot    (expl_axi_arprot ),
-//     .axi_arlock    (expl_axi_arlock ),
-//     .axi_arburst   (expl_axi_arburst),
-//     .axi_arlen     (expl_axi_arlen  ),
-//     .axi_arsize    (expl_axi_arsize ),
-
-//     .axi_awvalid   (expl_axi_awvalid),
-//     .axi_awready   (expl_axi_awready),
-//     .axi_awaddr    (expl_axi_awaddr ),
-//     .axi_awcache   (expl_axi_awcache),
-//     .axi_awprot    (expl_axi_awprot ),
-//     .axi_awlock    (expl_axi_awlock ),
-//     .axi_awburst   (expl_axi_awburst),
-//     .axi_awlen     (expl_axi_awlen  ),
-//     .axi_awsize    (expl_axi_awsize ),
-  
-//     .axi_rvalid    (expl_axi_rvalid ),
-//     .axi_rready    (expl_axi_rready ),
-//     .axi_rdata     (expl_axi_rdata  ),
-//     .axi_rresp     (expl_axi_rresp  ),
-//     .axi_rlast     (expl_axi_rlast  ),
-
-//     .axi_wvalid    (expl_axi_wvalid ),
-//     .axi_wready    (expl_axi_wready ),
-//     .axi_wdata     (expl_axi_wdata  ),
-//     .axi_wstrb     (expl_axi_wstrb  ),
-//     .axi_wlast     (expl_axi_wlast  ),
- 
-//     .axi_bvalid    (expl_axi_bvalid ),
-//     .axi_bready    (expl_axi_bready ),
-//     .axi_bresp     (expl_axi_bresp  ),
-
-//     .clk           (clk  ),
-//     .rst_n         (rst_n) 
-//   );
 
 
 endmodule
+
  /*                                                                      
  Copyright 2018-2020 Nuclei System Technology, Inc.                
                                                                          
@@ -27976,7 +27592,6 @@ module e203_soc_top(
   output axi_bready,
   input  [1:0] axi_bresp,
   input  [3:0]axi_bid
-
 );
 
 
@@ -28180,6 +27795,7 @@ module e203_soc_top(
     .axi_arburst   (axi_arburst),
     .axi_arlen     (axi_arlen  ),
     .axi_arsize    (axi_arsize ),
+    .axi_arid      (axi_arid),
           
     .axi_awvalid   (axi_awvalid),
     .axi_awready   (axi_awready),
@@ -28190,12 +27806,14 @@ module e203_soc_top(
     .axi_awburst   (axi_awburst),
     .axi_awlen     (axi_awlen  ),
     .axi_awsize    (axi_awsize ),
+    .axi_awid      (axi_awid),
         
     .axi_rvalid    (axi_rvalid ),
     .axi_rready    (axi_rready ),
     .axi_rdata     (axi_rdata  ),
     .axi_rresp     (axi_rresp  ),
     .axi_rlast     (axi_rlast  ),
+    .axi_rid       (axi_rid),
         
     .axi_wvalid    (axi_wvalid ),
     .axi_wready    (axi_wready ),
@@ -28205,8 +27823,8 @@ module e203_soc_top(
       
     .axi_bvalid    (axi_bvalid ),
     .axi_bready    (axi_bready ),
-    .axi_bresp     (axi_bresp  )
-
+    .axi_bresp     (axi_bresp  ),
+    .axi_bid       (axi_bid)
   );
 
 
@@ -28305,21 +27923,21 @@ module e203_soc_axi_top(
   wire expl_axi_arvalid;
   wire expl_axi_arready;
   wire [32-1:0] expl_axi_araddr;
-  wire [3:0] expl_axi_arcache;
-  wire [2:0] expl_axi_arprot;
-  wire [1:0] expl_axi_arlock;
+  wire [0:0] expl_axi_arcache;
+  wire [0:0] expl_axi_arprot;
+  wire [0:0] expl_axi_arlock;
   wire [1:0] expl_axi_arburst;
-  wire [3:0] expl_axi_arlen;
+  wire [7:0] expl_axi_arlen;
   wire [2:0] expl_axi_arsize;
 
   wire expl_axi_awvalid;
   wire expl_axi_awready;
   wire [32-1:0] expl_axi_awaddr;
-  wire [3:0] expl_axi_awcache;
-  wire [2:0] expl_axi_awprot;
-  wire [1:0] expl_axi_awlock;
+  wire [0:0] expl_axi_awcache;
+  wire [0:0] expl_axi_awprot;
+  wire [0:0] expl_axi_awlock;
   wire [1:0] expl_axi_awburst;
-  wire [3:0] expl_axi_awlen;
+  wire [7:0] expl_axi_awlen;
   wire [2:0] expl_axi_awsize;
 
   wire expl_axi_rvalid;
