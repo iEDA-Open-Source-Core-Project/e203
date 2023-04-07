@@ -154,7 +154,99 @@ kon原始的 Freedom E310 SoC 一致
 **目前的困难**
 1. `E203` 自带的仿真测试程序中，用到了 `PPI` 总线上的设备，去除后仿真失败
 2. `iEDA` 地址范围太大，修改时测试困难
-3. `Mem Bus` 上位 32 位的 `icb`，转换出来的 `AXI` 也是 32 位的，但是 `iEDA` 提供的接口是 `64` 位的。需要用 `module sirv_gnrl_icb_n2w` 将 `icb32` -> `icb64` -> `AXI64`,进行转换
+
+## 具体实施过程
+
+### 去除不需要的设备
+尝试通过配置文件去除 `FIO` ，`PPI`，`PLIC`，`ITCM`，`DTCM` 核内 `ICB` 总线。配置文件路径如下：
+```
+rtl/e203/core/config.v
+rtl/e203/core/e203_defines.v
+```
+
+![image.png](https://cdn.jsdelivr.net/gh/leesum1/doc/img/202304071516963.png)
+![image.png](https://cdn.jsdelivr.net/gh/leesum1/doc/img/202304071517770.png)
+![image.png](https://cdn.jsdelivr.net/gh/leesum1/doc/img/202304071517264.png)
+修改配置文件后会出现模块端口不匹配等问题，需要修改的地方太多。蜂鸟 `E203` 并不是完全可配置的。`E203` 核心内延伸出来的总线如下所示。
+![](https://cdn.jsdelivr.net/gh/leesum1/doc/img/2023-03-29_11-14.png)
+修改配置文件的方法行不通，那么就从根源上切断其他总线路径的传播路径。具体来说，就是将 `DTCM` `ITCM` `PLIC` `PPI` `FIO` 总线的 `VALID` 信号掐断（置为0），使 `IFU`，`LSU` 的每次访存信息从 `System Bus`上获取。具体改动如下
+```diff
+--- a/rtl/e203/core/e203_biu.v
++++ b/rtl/e203/core/e203_biu.v
+@@ -821,17 +821,20 @@ module e203_biu(
+                            `endif//}
+                            } = splt_bus_icb_rsp_ready;
+ 
+-  wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
++  // wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
++  wire buf_icb_cmd_ppi = 1'b0; // disable ppi
+   wire buf_icb_sel_ppi = buf_icb_cmd_ppi & (~buf_icb_cmd_ifu);
+ 
+   wire buf_icb_cmd_clint = clint_icb_enable & (buf_icb_cmd_addr[`E203_CLINT_BASE_REGION] ==  clint_region_indic[`E203_CLINT_BASE_REGION]);
+   wire buf_icb_sel_clint = buf_icb_cmd_clint & (~buf_icb_cmd_ifu);
+ 
+-  wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
++  // wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
++  wire buf_icb_cmd_plic = 1'b0; // disable plic
+   wire buf_icb_sel_plic = buf_icb_cmd_plic & (~buf_icb_cmd_ifu);
+ 
+   `ifdef E203_HAS_FIO //{
+-  wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
++  // wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
++  wire buf_icb_cmd_fio = 1'b0; // disable fio
+   wire buf_icb_sel_fio = buf_icb_cmd_fio & (~buf_icb_cmd_ifu);
+   `endif//}
+ 
+diff --git a/rtl/e203/core/e203_ifu_ift2icb.v b/rtl/e203/core/e203_ifu_ift2icb.v
+index 8175138..9d3d37d 100644
+--- a/rtl/e203/core/e203_ifu_ift2icb.v
++++ b/rtl/e203/core/e203_ifu_ift2icb.v
+@@ -283,7 +283,8 @@ module e203_ifu_ift2icb(
+ // ===========================================================================
+ 
+   `ifdef E203_HAS_ITCM //{
+-  wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); 
++  // wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); 
++  wire ifu_req_pc2itcm = 1'b0;
+   `endif//}
+ 
+   `ifdef E203_HAS_MEM_ITF //{
+@@ -791,8 +792,8 @@ module e203_ifu_ift2icb(
+   // Dispatch the ICB CMD and RSP Channel to ITCM and System Memory
+   //   according to the address range
+   `ifdef E203_HAS_ITCM //{
+-  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
+-
++  // assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
++  assign ifu_icb_cmd2itcm = 1'b0;
+   assign ifu2itcm_icb_cmd_valid = ifu_icb_cmd_valid & ifu_icb_cmd2itcm;
+   assign ifu2itcm_icb_cmd_addr = ifu_icb_cmd_addr[`E203_ITCM_ADDR_WIDTH-1:0];
+ 
+diff --git a/rtl/e203/core/e203_lsu_ctrl.v b/rtl/e203/core/e203_lsu_ctrl.v
+index c4ffd66..2f75aeb 100644
+--- a/rtl/e203/core/e203_lsu_ctrl.v
++++ b/rtl/e203/core/e203_lsu_ctrl.v
+@@ -561,12 +561,14 @@ module e203_lsu_ctrl(
+   //  * The FIFO will be pushed when a ICB CMD handshaked
+   //  * The FIFO will be poped  when a ICB RSP handshaked
+   `ifdef E203_HAS_ITCM //{
+-  wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
++  // wire arbt_icb_cmd_itcm = (arbt_icb_cmd_addr[`E203_ITCM_BASE_REGION] ==  itcm_region_indic[`E203_ITCM_BASE_REGION]);
++  wire arbt_icb_cmd_itcm = 1'b0;
+   `else//}{
+   wire arbt_icb_cmd_itcm = 1'b0;
+   `endif//}
+   `ifdef E203_HAS_DTCM //{
+-  wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
++  // wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
++  wire arbt_icb_cmd_dtcm = 1'b0;
+   `else//}{
+   wire arbt_icb_cmd_dtcm = 1'b0;
+   `endif//}
+
+```
+
+### 将 iEDA 挂载进来
 
 
 
