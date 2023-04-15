@@ -37,7 +37,9 @@ compile: ${RUN_DIR}
 
 ysyx:
 	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
-	cp ./ysyx_230000.v ~/Pro/iverilog-soc/cpu
+	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
+
+#	cp ./ysyx_230000.v ~/Pro/iverilog-soc/cpu
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}

@@ -198,6 +198,9 @@
     1.  ar、r通道：![image-20230402105442133](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619564.png)
     2.  aw、w、b通道：![image-20230402105404191.png](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619606.png)
 
+## 4 测试结果：
+`《test》`
+
 
 # 三、BUG：
 1.  测试时，spi宏定义未找到：
@@ -232,3 +235,11 @@ index 3d68888..85c9816 100644
 +../perip/spi/rtl/spi_defines.v
 +../perip/spiFlash/tb/spi_flash_tb.v
 ```
+
+2. rtt打印不出消息框：
++ 运行时间大概15h左右,但还未显示消息框(msh)
++ BUG:  RTT没有触发时钟中断，导致无法触发输出；
++ 原因：总线优先级搞错，把clint当成外部接口信号，在`e203_biu.v`屏蔽了，相当于时钟中断一直无法触发，导致无法输出时钟中断；
+![image.png](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304101507490.png)
+
++ 将clint信号改为正常输入就行；
