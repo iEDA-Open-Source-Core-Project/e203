@@ -62,7 +62,7 @@ module e203_ifu_ift2icb(
   //////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////
   // The ITCM address region indication signal
-  input [`E203_ADDR_SIZE-1:0] itcm_region_indic,
+  input [`E203_ADDR_SIZE-1:0] itcm_region_indic,   //TODO: Modify 0x3000_0000
   // Bus Interface to ITCM, internal protocol called ICB (Internal Chip Bus)
   //    * Bus cmd channel
   output ifu2itcm_icb_cmd_valid, // Handshake valid
@@ -283,8 +283,8 @@ module e203_ifu_ift2icb(
 // ===========================================================================
 
   `ifdef E203_HAS_ITCM //{
-  // wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); 
-  wire ifu_req_pc2itcm = 1'b0;
+  wire ifu_req_pc2itcm = (ifu_req_pc[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]); //req_pc[32: 16] == [32: 16]
+  // wire ifu_req_pc2itcm = 1'b0; //TODO:这里将pctoITCM取消了
   `endif//}
 
   `ifdef E203_HAS_MEM_ITF //{
@@ -792,7 +792,7 @@ module e203_ifu_ift2icb(
   // Dispatch the ICB CMD and RSP Channel to ITCM and System Memory
   //   according to the address range
   `ifdef E203_HAS_ITCM //{
-  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
+  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 32:16->检测后16位是否0x8000
   // assign ifu_icb_cmd2itcm = 1'b0;
   assign ifu2itcm_icb_cmd_valid = ifu_icb_cmd_valid & ifu_icb_cmd2itcm;
   assign ifu2itcm_icb_cmd_addr = ifu_icb_cmd_addr[`E203_ITCM_ADDR_WIDTH-1:0];

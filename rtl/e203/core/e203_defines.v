@@ -177,7 +177,9 @@
   //  so the AW is addr_wdith - 3
   `define E203_ITCM_RAM_DP      (1<<(`E203_CFG_ITCM_ADDR_WIDTH-3)) 
   `define E203_ITCM_RAM_AW          (`E203_CFG_ITCM_ADDR_WIDTH-3) 
+  // [32: 16]
   `define E203_ITCM_BASE_REGION  `E203_ADDR_SIZE-1:`E203_ITCM_ADDR_WIDTH
+
   
   `define E203_CFG_ITCM_DATA_WIDTH_IS_64
   `ifdef E203_CFG_ITCM_DATA_WIDTH_IS_64
