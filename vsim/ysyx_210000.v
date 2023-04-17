@@ -80,6 +80,7 @@
 
 //
 `define E203_CFG_ITCM_ADDR_BASE   `E203_CFG_ADDR_SIZE'h8000_0000 
+//TODO: modify mapping 8 -> 3
 `define E203_CFG_DTCM_ADDR_BASE   `E203_CFG_ADDR_SIZE'h9000_0000 
 
  //   * PPI       : 0x1000 0000 -- 0x1FFF FFFF
@@ -43556,8 +43557,8 @@ module e203_ifu_ift2icb(
   // Dispatch the ICB CMD and RSP Channel to ITCM and System Memory
   //   according to the address range
   `ifdef E203_HAS_ITCM //{
-  // assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
-  assign ifu_icb_cmd2itcm = 1'b0;
+  assign ifu_icb_cmd2itcm = (ifu_icb_cmd_addr[`E203_ITCM_BASE_REGION] == itcm_region_indic[`E203_ITCM_BASE_REGION]);  // 31:16->检测后16位是否0x8000
+  // assign ifu_icb_cmd2itcm = 1'b0;
   assign ifu2itcm_icb_cmd_valid = ifu_icb_cmd_valid & ifu_icb_cmd2itcm;
   assign ifu2itcm_icb_cmd_addr = ifu_icb_cmd_addr[`E203_ITCM_ADDR_WIDTH-1:0];
 

@@ -80,6 +80,7 @@
 
 //
 `define E203_CFG_ITCM_ADDR_BASE   `E203_CFG_ADDR_SIZE'h8000_0000 
+//TODO: modify mapping 8 -> 3
 `define E203_CFG_DTCM_ADDR_BASE   `E203_CFG_ADDR_SIZE'h9000_0000 
 
  //   * PPI       : 0x1000 0000 -- 0x1FFF FFFF

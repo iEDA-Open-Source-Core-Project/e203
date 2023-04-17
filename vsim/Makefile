@@ -9,6 +9,7 @@ DUMPWAVE     := 1
 
 CORE        := e203
 CFG         := ${CORE}_config
+IEDA := iverilog-soc
 
 
 CORE_NAME = $(shell echo $(CORE) | tr a-z A-Z)
@@ -37,7 +38,9 @@ compile: ${RUN_DIR}
 
 ysyx:
 	cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_210000.v > ./ysyx_210000.v
-	cp ./ysyx_210000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
+	cp ./ysyx_210000.v ~/Documents/Pro/Projects/$(IEDA)/cpu
+#	cp ./ysyx_210000.v ~/Documents/Pro/Projects/iverilog-soc-ITCM/cpu
+#	cp ./ysyx_210000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
 #	cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_230000.v > ./ysyx_230000.v
 #	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
 
