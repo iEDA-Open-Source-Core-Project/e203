@@ -44193,8 +44193,8 @@ module e203_lsu_ctrl(
   wire arbt_icb_cmd_itcm = 1'b0;
   `endif//}
   `ifdef E203_HAS_DTCM //{
-  // wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]);
-  wire arbt_icb_cmd_dtcm = 1'b0;
+  wire arbt_icb_cmd_dtcm = (arbt_icb_cmd_addr[`E203_DTCM_BASE_REGION] ==  dtcm_region_indic[`E203_DTCM_BASE_REGION]); // [31: 16] = 0x9000_****
+  // wire arbt_icb_cmd_dtcm = 1'b0;
   `else//}{
   wire arbt_icb_cmd_dtcm = 1'b0;
   `endif//}
