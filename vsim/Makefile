@@ -9,6 +9,7 @@ DUMPWAVE     := 1
 
 CORE        := e203
 CFG         := ${CORE}_config
+IEDA := iverilog-soc
 
 
 CORE_NAME = $(shell echo $(CORE) | tr a-z A-Z)
@@ -35,11 +36,13 @@ compile: ${RUN_DIR}
 	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
 	@echo '---- end vsim compile ----'
 
-ysyx:
-	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
-	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
+#ysyx:
+#	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
+#	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
 
-#	cp ./ysyx_230000.v ~/Pro/iverilog-soc/cpu
+ysyx:
+	cat ./install/rtl/e203_soc_top.v ../ysyx_210000.v > ./ysyx_210000.v
+	cp ./ysyx_210000.v ~/Documents/Pro/Projects/$(IEDA)/cpu
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
@@ -70,6 +73,7 @@ regress: regress_prepare regress_run regress_collect
 clean:
 	rm -rf run
 	rm -rf install
+	rm -rf ./*.v
 
 .PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect 
 

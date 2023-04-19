@@ -45893,8 +45893,7 @@ module e203_biu(
   wire buf_icb_cmd_ppi = 1'b0; // disable ppi
   wire buf_icb_sel_ppi = buf_icb_cmd_ppi & (~buf_icb_cmd_ifu);
 
-  // wire buf_icb_cmd_clint = clint_icb_enable & (buf_icb_cmd_addr[`E203_CLINT_BASE_REGION] ==  clint_region_indic[`E203_CLINT_BASE_REGION]);
-  wire buf_icb_cmd_clint = 1'b0;
+  wire buf_icb_cmd_clint = clint_icb_enable & (buf_icb_cmd_addr[`E203_CLINT_BASE_REGION] ==  clint_region_indic[`E203_CLINT_BASE_REGION]);
   wire buf_icb_sel_clint = buf_icb_cmd_clint & (~buf_icb_cmd_ifu);
 
   // wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
@@ -56856,7 +56855,7 @@ module apb_spi_master
 
 endmodule
 
-module ysyx_230000 (
+module ysyx_210000 (
   input          clock,
   input          reset,
   input          io_master_arready,

@@ -63,6 +63,9 @@
 
 
 其中 `Clint` 设备需要处理器核自己实现，因此将 0x000_0000 ---> 0x0fff_ffff 留给 e203 使用，总共还有 256MB 的地址空间可以使用
+> `iEDA` 使用的 `Clint`  是 `sifive clint` ，地址划分可以参考：
+> [4faf3e34-4a42-4c2f-be9e-c77baa4928c7\_fe310-g000-manual-v3p2.pdf](https://sifive.cdn.prismic.io/sifive/4faf3e34-4a42-4c2f-be9e-c77baa4928c7_fe310-g000-manual-v3p2.pdf)
+
 
 **E203 内部地址**
 >[3. Hummingbirdv2 SoC Peripherals — Hummingbirdv2 E203 Core and SoC 0.2.1 documentation](https://doc.nucleisys.com/hbirdv2/soc_peripherals/ips.html#overview)
@@ -111,7 +114,7 @@ kon原始的 Freedom E310 SoC 一致
   
 ```
 `E203` 具体来说有三条总线
-1. E203 Core 总线
+1. E203 Core 总线 （ITCM,DTCM,FIO,CLINT,PLIC）
 2. Mem Bus 总线
 3. PPI 总线 （私有设备总线）
 
@@ -119,13 +122,12 @@ kon原始的 Freedom E310 SoC 一致
 `Mem Bus` 上挂载的设备的地址范围重合。`E203` 在核内有一个地址判断，首先判断是不是 `核内设备` ，然后再判断其他总线。具体来说，就是 `核内总线` 优先级大于 `Mem Bus` 和 `PPI bus` 。
 
 **E203 核内总线**
-设备直接固化在 `E203` 核心内
+`E203` 核心内延伸出 5 个 `icb` 总线接口，分别连接一下设备。并且在 `IFU` 和 `LSU` 访问时，优先判断是不是这些特殊设备。
 1. ITCM
 2. DTCM
 3. PLIC
 4. CLINT
 5. FAST IO
-
 `IFU` 能访问的只有 `ITCM` ，`LSU` 可以访问全部设备
 
 **Mem Bus 总线**
@@ -134,9 +136,11 @@ kon原始的 Freedom E310 SoC 一致
 
 ![](https://cdn.jsdelivr.net/gh/leesum1/doc/img/2023-03-29_11-14.png)
 
+`MEM BUS` 是挂载 `iEDA` 的合适之选。
+
 **PPI Bus**
 
-私有设备总线上挂载的设备只能由 `LSU` 访问，挂载各种通用的设备。
+私有设备总线上挂载的设备只能由 `LSU` 访问，挂载各种通用的设备。如果要添加一个自定义的外设，一般都是挂载在这条总线上。但 `iEDA` 不能挂载在这上面，因为 `IFU` 也需要访问 `iEDA` 上的 `DRAM` 设备。
 
 ## 准备方案
 
@@ -247,17 +251,18 @@ index c4ffd66..2f75aeb 100644
 ```
 
 ### 将 iEDA 挂载进来
-> 大纲：首先尝试挂载在 MemBus 的 1to8 的总线下面
-> 发现 1to8 不能设置 iEDA 0x0000_0000 -- 0xFFFF_FFFF 这么大的地址空间
-> 为什么要使用 0x0000_0000 -- 0xFFFF_FFFF 而不是 0X1000_0000 -- 0xFFFF_FFFF
-> 主要还是和 `E203` 识别总线地址范围的方式有关，具体不细说
-> 解决方案：去掉 1to8，去掉 MemBus 下面的其他外设，反正也用不到
-> 将 iEDA 直接与 MemBus 连接，相当与将原来的 1to8 变为了 1to1
+
+由于需要我们自己实现 `Clint` ，所以 `iEDA` 所需要的最小地址空间范围为 `0X1000_0000 -- 0XFFFF_FFFF`。
+
+`iEDA` 需要挂载 `MEM BUS` 总线下，`MEM BUS` 本质上是一个 `1to8` 的 `icb` 扩展模块，我们只需要将 `1to8` 中的一份分给 `iEDA` 就行了。但是由于 `0X1000_000 -- 0XFFFF_FFFF` 不满足 `1to8icb` 的地址参数要求（具体要求可以看 `e203 icb 总线分析` 地址范围章节）。无法通过高位来确定范围。
+![image.png](https://cdn.jsdelivr.net/gh/leesum1/doc/img/202304181546317.png)
+最终解决方案，我们将 `1to8icb` 去掉，反正其余挂载在 `MEM BUS` 上的设备我们也不会用到，只留下一 `icb` 接口用来连接 `iEDA` ，所有地址都是 `iEDA` 的，地址问题就不是问题了。转换过程如下：
+
+```
+icb32 -> icb64 -> axi4
+```
 
 
-
-
-
-
+另外还需要注意 `axi` 的 `id` 信号，一定不能悬空！！！！！不然永远读不到数据！！！！！！
 
 
