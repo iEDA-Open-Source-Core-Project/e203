@@ -24,7 +24,6 @@ install:
 #	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
 #	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
 	@python3 ./mergefile_nice.py
-#	@python3 ./mergefile.py
 
 ${RUN_DIR}:
 	@mkdir -p ${RUN_DIR}
@@ -40,9 +39,9 @@ compile: ${RUN_DIR}
 #	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
 #	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
 
-ysyx:
-	cat ./install/rtl/e203_soc_top.v ../ysyx_210000.v > ./ysyx_210000.v
-	cp ./ysyx_210000.v ~/Documents/Pro/Projects/$(IEDA)/cpu
+ysyx: install
+	@cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_e203.v > ./ysyx_e203.v
+	@cp ./ysyx_e203.v ~/Documents/Pro/Projects/$(IEDA)/cpu
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
@@ -71,9 +70,9 @@ regress_collect:
 regress: regress_prepare regress_run regress_collect 
 
 clean:
-	rm -rf run
-	rm -rf install
-	rm -rf ./*.v
+	@rm -rf run
+	@rm -rf install
+	@rm -rf ./*.v
 
 .PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect 
 

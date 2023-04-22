@@ -40,9 +40,9 @@ tbFiles = glob.glob(os.path.join(tbPath, 'tb_top.v'), recursive=True)
 E203con = os.path.join(e203Path, 'core', 'config.v')
 E203def = os.path.join(e203Path, 'core', 'e203_defines.v')
 E203i2c = os.path.join(e203Path, 'perips', 'apb_i2c', 'i2c_master_defines.v')
-print('TB is ', tbFiles)
+# print('TB is ', tbFiles)
 # 输出文件数量
-print('Found {} e203 files'.format(len(allFiles)))
+# print('Found {} e203 files'.format(len(allFiles)))
 
 # 输出文件列表
 # for file in allFiles: print(file)
@@ -81,6 +81,7 @@ with open('./install/rtl/e203_soc_top.v', 'w') as log:
                 content = f.read()
                 content = content.replace('`include "e203_defines.v"', "")
                 content = content.replace('`include "i2c_master_defines.v"', "")
+                content = content.replace('u_e203', "u_ysyx_e203")
                 log.write(content)
 #                print('已经合并：' + path)
     logging.info('Core is ok')

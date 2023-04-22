@@ -1,5 +1,5 @@
 
-module ysyx_210000 (
+module ysyx_e203 (
   input          clock,
   input          reset,
   input          io_master_arready,
@@ -149,28 +149,28 @@ e203_soc_top u_e203_soc_top(
   .io_pads_jtag_TDO_o_oval (jtag_TDO),
   .io_pads_jtag_TDO_o_oe (),
 
-   .io_pads_gpioA_i_ival(32'b0),
-   .io_pads_gpioA_o_oval(),
-   .io_pads_gpioA_o_oe  (),
+  .io_pads_gpioA_i_ival(32'b0),
+  .io_pads_gpioA_o_oval(),
+  .io_pads_gpioA_o_oe  (),
 
-   .io_pads_gpioB_i_ival(32'b0),
-   .io_pads_gpioB_o_oval(),
-   .io_pads_gpioB_o_oe  (),
+  .io_pads_gpioB_i_ival(32'b0),
+  .io_pads_gpioB_o_oval(),
+  .io_pads_gpioB_o_oe  (),
 
-   .io_pads_qspi0_sck_o_oval (),
-   .io_pads_qspi0_cs_0_o_oval(),
-   .io_pads_qspi0_dq_0_i_ival(1'b1),
-   .io_pads_qspi0_dq_0_o_oval(),
-   .io_pads_qspi0_dq_0_o_oe  (),
-   .io_pads_qspi0_dq_1_i_ival(1'b1),
-   .io_pads_qspi0_dq_1_o_oval(),
-   .io_pads_qspi0_dq_1_o_oe  (),
-   .io_pads_qspi0_dq_2_i_ival(1'b1),
-   .io_pads_qspi0_dq_2_o_oval(),
-   .io_pads_qspi0_dq_2_o_oe  (),
-   .io_pads_qspi0_dq_3_i_ival(1'b1),
-   .io_pads_qspi0_dq_3_o_oval(),
-   .io_pads_qspi0_dq_3_o_oe  (),
+  .io_pads_qspi0_sck_o_oval (),
+  .io_pads_qspi0_cs_0_o_oval(),
+  .io_pads_qspi0_dq_0_i_ival(1'b1),
+  .io_pads_qspi0_dq_0_o_oval(),
+  .io_pads_qspi0_dq_0_o_oe  (),
+  .io_pads_qspi0_dq_1_i_ival(1'b1),
+  .io_pads_qspi0_dq_1_o_oval(),
+  .io_pads_qspi0_dq_1_o_oe  (),
+  .io_pads_qspi0_dq_2_i_ival(1'b1),
+  .io_pads_qspi0_dq_2_o_oval(),
+  .io_pads_qspi0_dq_2_o_oe  (),
+  .io_pads_qspi0_dq_3_i_ival(1'b1),
+  .io_pads_qspi0_dq_3_o_oval(),
+  .io_pads_qspi0_dq_3_o_oe  (),
 
   .io_pads_aon_erst_n_i_ival(rst_n),
 
@@ -220,7 +220,7 @@ e203_soc_top u_e203_soc_top(
     .axi_wdata     (io_master_wdata  ),
     .axi_wstrb     (io_master_wstrb  ),
     .axi_wlast     (io_master_wlast  ),
- 
+
     .axi_bvalid    (io_master_bvalid ),
     .axi_bready    (io_master_bready ),
     .axi_bresp     (io_master_bresp  ),
