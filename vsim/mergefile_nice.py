@@ -81,7 +81,7 @@ with open('./install/rtl/e203_soc_top.v', 'w') as log:
                 content = f.read()
                 content = content.replace('`include "e203_defines.v"', "")
                 content = content.replace('`include "i2c_master_defines.v"', "")
-                content = content.replace('u_e203', "u_ysyx_e203")
+                content = content.replace('u_e203', "ysyx_e203")
                 log.write(content)
 #                print('已经合并：' + path)
     logging.info('Core is ok')

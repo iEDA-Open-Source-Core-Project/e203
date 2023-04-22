@@ -40,8 +40,9 @@ compile: ${RUN_DIR}
 #	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
 
 ysyx: install
-	@cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_e203.v > ./ysyx_e203.v
-	@cp ./ysyx_e203.v ~/Documents/Pro/Projects/$(IEDA)/cpu
+	@mkdir -p ./build
+	@cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_e203.v > ./build/ysyx_e203.v
+	@cp ./build/ysyx_e203.v ~/Documents/Pro/Projects/$(IEDA)/cpu
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
