@@ -4,3 +4,4 @@ Nuclei_Tools
 .VSCodeCounter
 vsim/build
 vsim/install
+nohup.out

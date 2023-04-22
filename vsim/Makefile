@@ -35,10 +35,6 @@ compile: ${RUN_DIR}
 	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
 	@echo '---- end vsim compile ----'
 
-#ysyx:
-#	cat ./install/rtl/e203_soc_top.v ../ysyx_230000.v > ./ysyx_230000.v
-#	cp ./ysyx_230000.v ~/Documents/Pro/Projects/iverilog-soc/cpu
-
 ysyx: install
 	@mkdir -p ./build
 	@cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_e203.v > ./build/ysyx_e203.v
@@ -75,5 +71,5 @@ clean:
 	@rm -rf install
 	@rm -rf ./*.v
 
-.PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect 
+.PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect ysyx
 

@@ -1,119 +1,124 @@
+#e203 #RISC-V #Verilog 
+
 # 蜂鸟e203内部寄存器：
 
-### sirv_sim_ram：
+## sirv_sim_ram：
 
-- 功能：仿真SRAM，将x不定态->0
+### 功能：
 
-- 信号参数：
+- 模拟SRAM；
+
+- 根据输入信号`cs`和`we`生成写使能信号`wen`和读使能信号`ren`。当读使能信号`ren`高电平时，时钟逻辑块在时钟信号`clk`上升沿时更新地址寄存器`addr_r`；
+
+- 该模块还有一个生成块，用于实现内存数组`mem_r`。生成块使用循环创建`MW`个内存块，每个内存块宽度为`DW`位。每个内存块都是一个单独的`always`块，当写使能信号`wen`高电平时更新相应的内存数组`mem_r`的部分。  
+
+- 该模块还有另一个生成块，可将输出`dout`中未初始化的位强制设置为零。这由`FORCE_X2ZERO`参数控制。
   
-  - FORCE_X2ZERO：有效->输出不定态变为0；
-  - DP：
-  - DW：din width；
-  - AW：addr width；
-  - MW：mask width；`
-
-- 信号接口：
+  - 如果`FORCE_X2ZERO`设置为1，则生成块创建另一个循环，遍历输出`dout`中的所有位，并将任何未初始化的位设置为零。
   
-  - wem：wirte enable mask，默认4bits对应写入数据4byte，写入掩码每一位对应；
+  - 否则，生成块只是将输出`dout`分配给由`addr_r`指定的内存数组`mem_r`的内容。  
+
+### 参数：
+
+| Name          | Default | Function                        |
+| ------------- | ------- | ------------------------------- |
+| FORCE_X2ZERO： | 0       | 有效则将输出的不定态变为0；                  |
+| DP：           | 512     | sram内部寄存器数量                     |
+| DW：           | 32      | data width, sram内部寄存器位宽         |
+| AW：           | 32      | addr width,数据地址宽度               |
+| MW：           | 4       | mask width，独热码，用于表示对应每`bytes`掩码 |
+
+### 信号接口：
+
+| Name | Function                                        |
+| ---- | ----------------------------------------------- |
+| clk  | 时钟信号                                            |
+| din  | 输入数据                                            |
+| addr | 输入数据的地址                                         |
+| cs   | 有效才可以进行读写                                       |
+| we   | write enable；有效->write，无效->read；                |
+| wem  | wirte enable mask，默认4bits对应写入数据4byte，写入掩码每一位对应； |
+| dout | 输出数据                                            |
+
+## sirv_gnrl_ram：
+
+### 功能：
+
++ 该模块内部实例化了一个名为`sirv_sim_ram`的模块，该模块是`RAM` 的仿真模型。
+
++ 实例化是基于`ifdef FPGA_SOURCE`宏定义进行条件判断的。如果定义了此宏定义，则使用FPGA源，否则使用仿真模型。
   
-  - cs：有效才可以进行读写；
+  + FPGA源：将`dout`数据正常输出；
   
-  - we：write enable；有效->write，无效->read；
-    
-### sirv_gnrl_ram：ram顶层
+  + 仿真模型：将`dout`数据中的不定太`x`强制变为`0`；
 
-- sd、ds、ls，无用信号；
+### 参数：
 
-- sirv_gnrl_dfflr：通过always块编写寄存器逻辑；
+| Name          | Default | Function                        |
+| ------------- | ------- | ------------------------------- |
+| FORCE_X2ZERO： | 1       | 有效则将输出的不定态变为0；                  |
+| DP：           | 32      | sram内部寄存器数量                     |
+| DW：           | 32      | data width, sram内部寄存器位宽         |
+| AW：           | 15      | addr width,数据地址宽度               |
+| MW：           | 4       | mask width，独热码，用于表示对应每`bytes`掩码 |
 
-- ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454880.png)
+### 信号接口：
 
-- sirv_gnrl_icb_n2w：位宽转换模块 将lsu32位换为64位；
+| Name  | Function                                        |
+| ----- | ----------------------------------------------- |
+| clk   | 时钟信号                                            |
+| rst_n | 复位信号，低电平有效，**但此处并未使用**                          |
+| sd    | 并未使用                                            |
+| ds    | 并未使用                                            |
+| ls    | 并未使用                                            |
+| din   | 输入数据                                            |
+| addr  | 输入数据的地址                                         |
+| cs    | 有效才可以进行读写                                       |
+| we    | write enable；有效->write，无效->read；                |
+| wem   | wirte enable mask，默认4bits对应写入数据4byte，写入掩码每一位对应； |
+| dout  | 输出数据                                            |
 
-- sirv_gnrl_icb_arbt：ICB总线仲裁模块；
+## 常用寄存器
 
-- sirv_gnrl_fifo：通过配置DP大小，从而得到不同深度的fifo；
-  
-  - 0：单口ram；
-  
-  - 1：ready信号与下一级ready信号相关，需要使用CUT_ready控制->1可以切断反压信号，两个周期传递一次数据；
-  
-  - 大于1：fifo，CUT_READY无实际意义；
-  
-  - 注意：在蜂鸟中，DP只有1或者2，也就是说要么是控制ready信号，反压；要么是一个深度为2的fifo；
-    
-### buf
-+ sirv_gnrl_pipe_stage：DP=0，o_dat=i_dat；
-- 相当于将输入信号打一拍；
-  ### sirv_sram_icb_ctrl：
-
-- 定义：The icb_ecc_ctrl module control the ICB access requests to SRAM ；
-  
-  - 内部定义一个bypbuf（含有fifo的bypass buffer），悬空一级流水线，以减少反压ready信号（通过将输入、输出信号拼接成总线信号传输）；
-
-- 参数：
-  
-  - sram_ctrl_active：高电平sram工作；
-  - tcm_cgstop：来自csr mcgstop（0xBFE）控制，蜂鸟自定义，主要用于禁用在debug 中 ITCM中的SRAM门控时钟；
-
-### EEC
-1. Error Checking and Correction 
-   1. 保护SRAM，可以对1位错误纠正，2位错误上报系统；
-   2. 蜂鸟中对ITCM、DTCM中SRAM进行保护；
+![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454880.png)
 
 # E203架构：
 
-- e203目录树：
-  ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454707.png)
+e203目录树：
+![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454707.png)
 
-## E203 ：
+## 蜂鸟e203：
 
-1. 2级流水线处理器核；
++ 2级流水线处理器核，流水线的按序主体是位于第一级的“取指”和位于第二级的“执行”和“写回”；
 
-2. 支持RV32IEMAC指令集；
++ 支持`RV32IEMAC`指令集；
 
-3. 机器模式；
-   
-   1. CLINT：计时器中断、软件中断；
-   2. PLIC：外部中断， Platform Level Interrupt Controller；用于多个外部中断源的优先级仲裁和派发；
-      1. 是一个存储器地址映射（Memory Address Mapped）的模块，挂载在处理器核为其实现的专用总线接口上；
-   3. 地址非对齐（Address Misalign）：与Rocket Core 采用软件支持，AGU 通过对生成 出的访存地址进行判断，如果其地址非对齐，则产生异常标志；
-   4. 自定义CSR：mcounterstop
-      1. ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454984.png)
++ 机器模式；
 
-4. SoC总线：ICB-Internal Chip Bus，内核+Soc总线；
-   
-   1. AXI相关特点：
-      1. 简单，仅有两个独立通道-读写共用**地址通道**，公用结果**返回通道**；
-      2. 地址、数据分离；
-      3. 地址区间寻址，支持任意的主从数目；
-      4. 支持地址非对齐的数据访问，字节掩码（Write Mask）控制写操作；
-      5. 支持多个**滞外交易**（Multiple Outstanding Transaction）
-   2. AHB相关特点：
-      1. 每个读/写都会在**地址通道**上产生地址；
-      2. 不支持乱序返回、乱序完成，返回通道数据顺序返回结果；
-   3. 协议信号：![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454873.png)
-   4. 时序：详细请参考《蜂鸟E203开源Soc介绍》第四章
-      1. 写操作同一周期返回结果；
-      2. 读操作下一周期返回结果
++ CLINT：计时器中断、软件中断；
 
-5. SOC框图：
-   
-   1. ![overview_fig1](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619152.jpeg)
-   
-   2. ![core_fig1](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619194.jpeg)
-   
-   3. ![core_fig2](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619225.jpeg)
++ PLIC：外部中断， Platform Level Interrupt Controller；用于多个外部中断源的优先级仲裁和派发；
+
++ 自定义CSR：mcounterstop![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071454984.png)
+
++ SoC总线：ICB-Internal Chip Bus，内核+Soc总线，详细请参考文档《e203 icb总线分析》《e203 icb总线介绍》；
+
++ SOC框图：
+1. ![overview_fig1](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619152.jpeg)
+
+2. ![core_fig1](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619194.jpeg)
+
+3. ![core_fig2](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619225.jpeg)
 
 ## IFU：
 
 ### 分支预测：
 
-1. ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455798.png)
+![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455798.png)
 
-2. 分支预测：静态预测，通过对比当前PC值。若是向后跳转为真，向前跳转为假；
+1. 分支预测算法为静态预测，向后跳转则预测为需要跳，否则预测为不需要跳；
 
-3. 主要模块：
+2. 主要模块：
    
    1. e203_exu_oitf：Outstanding Instructions Track FIFO
       
@@ -137,111 +142,95 @@
 
 ### IFU取指：
 
-1. 将预测地址低16位写入 `ifuitcm` 中取指，将会在下个时钟上升沿得到 64 bits数据；
-   
-   1. 这里如果是32位指令，`addr`需要四字节掩码对齐；如果压缩指令，就会直接取最低16位，其余部分存入缓存中；
-   2. 其中内部含有一个缓存`Buffer`，参考《蜂鸟7.3.5 访问`ITCM`和`BIU`》；
-   3. 遇到ITCM之外的指令，通过`ifu2biu`接口，通过`BLU`模块访问`MEM`；
-      1. ITCM中保存指令是通过上电Flash冲刷保存数据，但其中保存数据以是固定的（相当于地址映射：将`MEM`中一段内存放入`ITCM`中，同时也需要考虑`Load/Store`类型访问该段地址，因此此处还有`IFU`接口；）
-      2. 大小为：1KB，0x8000处地址都在ITCM寻找，其余地址触发ICB总线；
-      3. ITCM设计适用于低功耗小型处理器；
+将预测地址低16位写入 `ifuitcm` 中取指，将会在下个时钟上升沿得到 64 bits数据；
 
-## EXU：
+1. 这里如果是32位指令，`addr`需要四字节掩码对齐；如果压缩指令，就会直接取最低16位，其余部分存入缓存中；
+2. 其中内部含有一个缓存`Buffer`，参考《蜂鸟7.3.5 访问`ITCM`和`BIU`》；
+3. 遇到ITCM之外的指令，通过`ifu2biu`接口，通过`BLU`模块访问`MEM`；
+   1. ITCM中保存指令是通过上电Flash冲刷保存数据，但其中保存数据以是固定的（相当于地址映射：将`MEM`中一段内存放入`ITCM`中，同时也需要考虑`Load/Store`类型访问该段地址，因此此处还有`IFU`接口；）
+   2. 大小为：1KB，0x8000处地址都在ITCM寻找，其余地址触发ICB总线；
+   3. ITCM设计适用于低功耗小型处理器；
 
-### EXU架构
+## ITCM：
 
-1. ![](/home/zpn/.config/marktext/images/2023-04-17-21-27-03-image.png)
-2. 蜂鸟E203处理器核EXU微架构示意图：
-   1. ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455363.png)
-   2. OITF：Outstanding Instructions Track FIFO，深度为2表项的FIFO；![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455529.png)
-3. WB：![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455114.png)只要前序指令没发生“分支预测错误”、“中断”、“异常”就成功交付；
-4. 数据冲突：![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071455385.png)
+**请先参考《e203 icb总线介绍》，了解ICB总线原理及其内部模块介绍**
 
-### EXU模块：
+        `IFU`有专门访问`ITCM`的数据通道(64位宽),同时 `ITCM` 也能够被 `load 、 store` 指令访问到用于存储数据,因此 `ITCM` 本身也是 `Memory`子系统的重要一部分。主体由一块数据宽度为`64`比特的单口` SRAM`组成 。`ITCM`的大小和基地址 (位于全局地址空间中的起始地址)可以通过 `config.v` 中的宏定义参数配置。
 
-#### AGU：Address Generation Unit
+### 信号接口：
 
-- Load、store、“A“扩展指令的地址生成，以及”A“扩展指令的微操作拆分和执行；
-- 整个存储器访问指令执行的一个小环节！！！！
-- 含**有ICB接口**
+| Name  | Width            | Function                                        |
+| ----- | ---------------- | ----------------------------------------------- |
+| clk   | 1                | 时钟信号                                            |
+| rst_n | 1                | 复位信号，低电平有效，**但此处并未使用**                          |
+| sd    | 1                | `e203_cpu`设置为0                                  |
+| ds    | 1                | `e203_cpu`内部设置为0                                |
+| ls    | 1                | `e203_cpu`发出控制信号                                |
+| din   | E203_ITCM_RAM_DW | 输入数据                                            |
+| addr  | E203_ITCM_RAM_AW | 输入数据的地址                                         |
+| cs    | 1                | 有效才可以进行读写                                       |
+| we    | 1                | write enable；有效->write，无效->read；                |
+| wem   | E203_ITCM_RAM_MW | wirte enable mask，默认4bits对应写入数据4byte，写入掩码每一位对应； |
+| dout  | E203_ITCM_RAM_DW | 输出数据                                            |
 
-#### LSU：Load Store Unit ---参考11.4.3 P191
+### 模块简介
 
-- ICB总线 ：输入AGU、EAI；输出：BIU、DTCM、ITCM；
-- 学习知识点：ICB汇合、ICB分发--第12章
-- ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071624099.png)
+大小为64KB,内存地址范围为 `0x8000_0000 - 0x8000_ffff`；
 
-### 存储器：
+ICB总线接口：
 
-![image.png](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071629802.png)
+- 第一组`ICB`总线输入：数据宽度32位，LSU访问，用于上电存储数据；
+- 另外两组`ICB`总线输入：数据宽度 64 位的 IFU 专用ICB 接口，数据宽度 32 位的外部直接访问（外部接口，便于其他外设访问）；
+- 三组总线汇总为一组ICB总线，通过实例化`sirv_gnrl_icb_arbt`裁决输出给`ITCM`一组`ICB`信号；
+- 优先级：LSU > 外部接口> IFU；
 
-#### ITCM：
+模块原理：
 
-- sram接口信号：ds、sd低电平，ls为cpu发出信号；
+- 先`LSU、ITCM`外设`ICB`总线数据位宽通过实例化 `sirv_gnrl_icb_n2w` 扩展到64位；
 
-- 大小：64KB, `0x8000_0000 - 0x8000_ffff`
+- 通过实例化 `sirv_gnrl_icb_arbt` 仲裁，生成一组`icb`总线接口信号；
 
-- ICB总线接口：
+- 通过实例化 `sirv_sram_icb_ctrl` 模块将`icb`总线接口信号转换为`sram`接口信号以及`cmd、rsp`反馈信号；
   
-  - 一组输入：数据宽度32位，LSU访问，用于上电存储数据；
-  - 两组输入：数据宽度 64 位的 IFU 专用ICB 接口，数据宽度 32 位的外部直接访问（外部接口，便于其他外设访问）；
-  - 三组总线汇总为一组ICB总线，优先级：LSU > 外部接口> IFU；
-
-- 64位单口SRAM，可配置大小（LSU、ITCM位宽位32位，需要数据转换）；
-
-- 模块原理：
-  
-  - 先LSU、ITCM外设 数据位宽通过实例化 **sirv_gnrl_icb_n2W** 扩展到64位（ext2itcm -> ext）；
-  - 然后将二者将其控制信号拼接为位宽*2的信号（{ext，lsu} ->arbt_bus），通过实例化 **sirv_gnrl_icb_arbt** 仲裁（主要是仲裁LSU与ext优先级，arbt_bus -> arbt）；
-  - 然后将仲裁arbt信号与ifu选择通过优先级（IF > LSU > 外设）控制，生成icb接口信号；
-  - 通过实例化 **sirv_sram_icb_ctrl** 模块将icb接口信号转换为sram接口信号以及cmd、rsp反馈信号；
-    - 内部实例化 sirv_gnrl_bypbuf 模块，将cmd 输入信号缓存一周期，防止ready反压；
-    - 实例化 sirv_1cyc_sram_ctral 模块，将缓存icb总线信号处理生成相对应sram信号以及反馈信号；
+  - 内部实例化 `sirv_gnrl_bypbuf` 模块，将`cmd`通道内输入信号缓存一周期，防止`ready`信号反压；
+  - 实例化 `sirv_1cyc_sram_ctrl` 模块，将缓存`icb`总线信号处理生成相对应`sram`信号以及反馈信号；
 
 - ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456006.png)
 
-#### DTCM：
+## DTCM：
 
-- ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456642.png)
+### 信号接口：
 
-- 32位单口SRAM；
+| Name  | Width            | Function                                        |
+| ----- | ---------------- | ----------------------------------------------- |
+| clk   | 1                | 时钟信号                                            |
+| rst_n | 1                | 复位信号，低电平有效，**但此处并未使用**                          |
+| sd    | 1                | `e203_cpu`设置为0                                  |
+| ds    | 1                | `e203_cpu`内部设置为0                                |
+| ls    | 1                | `e203_cpu`发出控制信号                                |
+| din   | E203_ITCM_RAM_DW | 输入数据                                            |
+| addr  | E203_ITCM_RAM_AW | 输入数据的地址                                         |
+| cs    | 1                | 有效才可以进行读写                                       |
+| we    | 1                | write enable；有效->write，无效->read；                |
+| wem   | E203_ITCM_RAM_MW | wirte enable mask，默认4bits对应写入数据4byte，写入掩码每一位对应； |
+| dout  | E203_ITCM_RAM_DW | 输出数据                                            |
 
-- 大小：64KB, `0x9000_0000 - 0x9000_ffff`
+### 模块简介
 
-- 两组ICB输入总线，LSU、外部直接访问接口，同理汇总为一条总线，LSU>外部接口；
++ `DTCM` 的存储器主体由一块数据宽度为32位的单口`SRAM`组成 。`DTCM`的大小和基地址（位于全局地址空间中的起始地址）可以通过 `config.v` 中的宏定义参数配置 。其大小为`64K`,内存范围为 `0x9000_0000 - 0x9000_ffff`。
 
-- "A"扩展指令处理：在多线程情形下访问存储器的原子（Atomic）操作或者同步操作
-  
-  - Load-Reserved和Store-Conditonal：LSU设置互斥检测器（EXclusive Monitor）；
-  - AMO（Atomic Memory Operation）指令；
++ `DTCM`有两组输入 `ICB`总线接口 ,分别来自于 `LSU` 和外部直接访问接口（`DTCM
+  External ICB Interface`）。 `DTCM`外部直接访问接口是专门为`DTCM` 配备的外部接口,便于 `Soc` 的其他模块直接访问蜂鸟 `E203` 处理器核的 `DTCM` 。
 
-#### Fence指令：
-  
-  - RISC-V架构采用松散存储器模型，松散存储器模型对于访问不同地址的存储器读写指令的执行顺序不作要求，除非使用明确的存储器屏障指令（Fence、Fence.I：用于强行界定存储器访问的顺序）；
-    
-    - 在程序中，如果添加了 Fence 指令，则 Fence 指令能够保证“在 Fence 之前所有指令造成的访存结果”必须比“在 Fence 之后所有指令造成的访存结果”先被观测到。
-    - 在程序中，如果添加了 Fence .I 令，则“在 Fence.I 之后所有指令的取指令操作” 定能够观测到“在 Fence.I 之前所有指令造成的访存结果”；
-  
-  - 处理：蜂鸟——fence当成 fence iorw，iorw指令实现；在流水线派遣点，必须等待所有已经滞外的指令执行完毕；
++ 两组输入 `ICB` 总线经过一个“ `ICB` 汇合”模块将其汇合成为一组 `ICB`总线,采用的仲裁机制是优先级仲裁, `LSU`总线具有更高的优先级 。
+
++ 经过汇合之后的 `ICB` 总线的命令通道进行简单处理后作为访问 `DTCM SRAM`的接口 。 同时将此操作的来源信息寄存,并用寄存后的信息指示 `SRAM` 返回的数据分发给 `LSU` 和 `DTCM` 外部直接访问接口的反馈通道。
+
+![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456642.png)
 
 ## ICB总线：
-详细请参考[[e203 icb总线分析]]
-- ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456722.png)
-  
-  - fifo：支持滞外交易，主要用于仲裁输出反馈信号；
-  
-  - ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456594.png)
-  
-  - ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456228.png)
 
-### ICB2AXI:
-详细请参考[[e203 icb转换axi]]
-+ 功能：将32位ICB总线转换为AXI总线；
-- 注意：
-  
-  - ICB不支持brust；
-  
-  - 转换后的AXI总线不包含每个通道的**id**信号；
+**详细请参考《e203 icb总线分析》《e203 icb总线简介》**
 
 # SoC：
 
@@ -250,54 +239,41 @@
 + ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456146.png)
 + Soc总线微架构图：![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456881.png)
 
-## EAI：16章
+# 蜂鸟e203 测试环境
 
-![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456625.png)
+`vsim/bin/run.Makefile` 是蜂鸟E203项目中的一个辅助脚本，用于生成 `Makefile` 文件并执行仿真。这个脚本会根据当前的仿真设置，自动生成 `Makefile` 文件。`Makefile` 文件包含了编译、仿真和波形查看等多个目标，用于方便地管理仿真过程。
+你可以在蜂鸟E203项目的 `vsim/bin` 目录下找到 `run.Makefile` 脚本，并执行以下命令来生成 `Makefile` 文件：
 
-- **滞外指令**：Custom指令从被发送至协处理器到协处理器反馈并退役之间的时间；（不超过4条）
++ ./run.Makefile
+  执行该命令后，`run.Makefile` 脚本会读取当前的仿真设置，并自动生成 `Makefile` 文件。生成的 `Makefile` 文件将包含多个目标，例如：
+- `compile`: 编译 Verilog 源文件
+- `sim`: 执行仿真
+- `wave`: 查看波形
+  你可以在终端中使用 `make` 命令来执行这些目标，例如：
 
-- 读写存储器优先级：协处理器>主处理器指令
+```
+make compile # 编译 Verilog 源文件
 
-# Code：
+make sim     # 执行仿真
 
-1. **ICB在ALU模块中处理wdata与wmask**；
-   1. 优点：通过与非逻辑将数据与控制信号绑定；
-   2. ![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071456706.png)
-2. `vsim/bin/run.Makefile` 是蜂鸟E203项目中的一个辅助脚本，用于生成 `Makefile` 文件并执行仿真。这个脚本会根据当前的仿真设置，自动生成 `Makefile` 文件。`Makefile` 文件包含了编译、仿真和波形查看等多个目标，用于方便地管理仿真过程。
-   你可以在蜂鸟E203项目的 `vsim/bin` 目录下找到 `run.Makefile` 脚本，并执行以下命令来生成 `Makefile` 文件：
-   + ./run.Makefile
-     执行该命令后，`run.Makefile` 脚本会读取当前的仿真设置，并自动生成 `Makefile` 文件。生成的 `Makefile` 文件将包含多个目标，例如：
-   - `compile`: 编译 Verilog 源文件
-   - `sim`: 执行仿真
-   - `wave`: 查看波形
-     你可以在终端中使用 `make` 命令来执行这些目标，例如：
-   + make compile  # 编译 Verilog 源文件  
-   + make sim      # 执行仿真  
-   + make wave     # 查看波形
-     需要注意的是，执行这些目标之前，你需要确认自己的仿真设置已经正确配置，并且所有依赖的工具和库已经正确安装。
+make wave     # 查看波形
+```
+
+需要注意的是，执行这些目标之前，你需要确认自己的仿真设置已经正确配置，并且所有依赖的工具和库已经正确安装。
 
 # TODO：
 
-## 1、 e203--合并文件脚本
+## e203--合并文件脚本
 
-[[e203 合并文件脚本]]
+请参考《e203 合并文件脚本》
 
-## 2、e203/BLU添加axi外设接口:
+## e203/BLU添加axi外设接口:
 
-[[e203 ICB转换AXI]]
+请参考《e203 ICB转换AXI》
 
-## 3、 iverilog-soc修改：
+## iverilog-soc修改：
 
-[[e203 启动方式分析]]
-[[e203 接入 iEDA 方式分析]]
-
-1. 修改外设；
-2. 将ITCM、DTCM注释以及删除一些无用外设，修改e203启动时内存映射位置：0x8000_0000 -> 0x3000_0000;
-3. 将e203接入iverilog-soc，但遇到问题；
-   1. E203支持brust=01传输；![](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619513.png)
-4. 正确AXI4总线波形图：
-   1. ar、r通道：![image-20230402105442133](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619564.png)
-   2. aw、w、b通道：![image-20230402105404191.png](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304071619606.png)
+请参考《e203 启动方式分析》《e203 接入 iEDA 方式分析》
 
 # BUG：
 
@@ -336,20 +312,65 @@
       +../perip/spi/rtl/spi_defines.v
       +../perip/spiFlash/tb/spi_flash_tb.v
       ```
-   
+
 2. rtt忽略CLINT信号：
-      
-- 运行时间大概15h左右,但还未显示消息框(msh)
-      
-- BUG: RTT没有触发时钟中断，导致无法触发输出；
-      
-- 原因：总线优先级搞错，把clint当成外部接口信号，在`e203_biu.v`屏蔽了，相当于时钟中断一直无法触发，导致无法输出时钟中断；
-  ![imagepng](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304101507490.png)
-      
-- 将clint信号正常输入就行；
+   
+   - 运行时间大概15h左右,但还未显示消息框(msh)
+   
+   - BUG: RTT没有触发时钟中断，导致无法触发输出；
+   
+   - 原因：总线优先级搞错，把clint当成外部接口信号，在`e203_biu.v`屏蔽了，相当于时钟中断一直无法触发，导致无法输出时钟中断；
+     ![imagepng](https://zpnmh.oss-cn-beijing.aliyuncs.com/img2/202304101507490.png)
+   
+   - 将clint信号正常输入就行；
 
+# 测试：
 
+1. 请参考`iverilog-soc`中`README`文件，测试`iverilog-soc`环境的正确性；
 
-# 测试结果：
+2. 在蜂鸟e203目录下，合并文件以及复制到`iverilog-soc/cpu`目录，可参看《e203 合并文件脚本》：
+
+```
+cd vsim
+make clean
+make ysyx               // 合并e203内所有.v文件
+// 合并ysyx_210000.v 和e203文件，并复制到iverilog-soc。
+// 注意需要您修改iverilog所对应的目录
+```
+
+3. 参看`iverilog-soc`中`README`，在`run`目录中执行
+   
+   ```
+   make update-filelist 
+   ```
+   
+   更新`iverilog-soc/filelist`，其中更新脚本存在问题，需要在修改`filelist/perip.f`，则可正确执行。
+   
+   ```
+   diff --git a/filelist/perip.f b/filelist/perip.f
+   index 9d6dc52..f279677 100644
+   --- a/filelist/perip.f
+   +++ b/filelist/perip.f
+   @@ -6,3 +6,16 @@
+    ../perip/spi/rtl/spi_top.v
+    ../perip/uart/rtl/uart_apb.v
+    ../perip/uart/tb/tty.v
+   +../perip/chiplink/chiplink.v  
+   +../perip/uart/rtl/uart16550/raminfr.v                                                                                                                                            
+   +../perip/uart/rtl/uart16550/timescale.v                                                                                                                                          
+   +../perip/uart/rtl/uart16550/uart_defines.v                                                                                                                                       
+   +../perip/uart/rtl/uart16550/uart_receiver.v                                                                                                                                      
+   +../perip/uart/rtl/uart16550/uart_regs.v                                                                                                                                          
+   +../perip/uart/rtl/uart16550/uart_rfifo.v                                                                                                                                         
+   +../perip/uart/rtl/uart16550/uart_sync_flops.v                                                                                                                                    
+   +../perip/uart/rtl/uart16550/uart_tfifo.v                                                                                                                                         
+   +../perip/uart/rtl/uart16550/uart_transmitter.v                                                                                                                                             
+   +../perip/spiFlash/N25Q128A13E_VG12/code/N25Qxxx.v       
+   +../perip/chiplink/simmem.v                                                                                                                                                       
+   +../perip/chiplink/top.v                                                                                                                            修改其
+   ```
+4. 现在可以测试`iverilog-soc`测试了；
+
+## 测试结果：
 
 请查看《test》
