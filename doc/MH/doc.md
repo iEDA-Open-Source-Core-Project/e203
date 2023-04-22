@@ -1,5 +1,3 @@
-#e203 #RISC-V #Verilog 
-
 # 蜂鸟e203内部寄存器：
 
 ## sirv_sim_ram：
@@ -265,15 +263,7 @@ make wave     # 查看波形
 
 ## e203--合并文件脚本
 
-请参考《e203 合并文件脚本》
-
-## e203/BLU添加axi外设接口:
-
-请参考《e203 ICB转换AXI》
-
-## iverilog-soc修改：
-
-请参考《e203 启动方式分析》《e203 接入 iEDA 方式分析》
+请参考《e203 接入 iEDA 方式分析》《e203 启动方式分析》
 
 # BUG：
 
@@ -367,8 +357,9 @@ make ysyx               // 合并e203内所有.v文件
    +../perip/uart/rtl/uart16550/uart_transmitter.v                                                                                                                                             
    +../perip/spiFlash/N25Q128A13E_VG12/code/N25Qxxx.v       
    +../perip/chiplink/simmem.v                                                                                                                                                       
-   +../perip/chiplink/top.v                                                                                                                            修改其
+   +../perip/chiplink/top.v 
    ```
+
 4. 现在可以测试`iverilog-soc`测试了；
 
 ## 测试结果：
