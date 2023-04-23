@@ -2,3 +2,4 @@ riscv-tools/prebuilt_tools/prefix/*
 doc/build
 Nuclei_Tools
 .VSCodeCounter
+nohup.out

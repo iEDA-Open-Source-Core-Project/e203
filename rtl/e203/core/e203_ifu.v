@@ -31,7 +31,7 @@ module e203_ifu(
   output ifu_active,
   input  itcm_nohold,
 
-  input  [`E203_PC_SIZE-1:0] pc_rtvec,  
+  input  [`E203_PC_SIZE-1:0] pc_rtvec,                          //*reset复位时起始地址，目前认为the external QSPI flash base address 
   `ifdef E203_HAS_ITCM //{
   input  ifu2itcm_holdup,
   //input  ifu2itcm_replay,

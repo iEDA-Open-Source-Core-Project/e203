@@ -73,7 +73,7 @@ ifeq ($(WAV_TOOL),verdi)
 WAV_OPTIONS   := +v2k -sverilog
 endif
 ifeq ($(WAV_TOOL),gtkwave)
-WAV_OPTIONS   := 
+WAV_OPTIONS   :=
 endif
 
 ifeq ($(SMIC130LL),1) 
