@@ -78,6 +78,15 @@ module e203_exu_decode(
   output dec_jalr,
   output dec_bxx,
 
+  output dec_rv32_beq, 
+  output dec_rv32_bne,
+  output dec_rv32_blt,
+  output dec_rv32_bgt,
+  output dec_rv32_bltu,
+  output dec_rv32_bgtu,
+  output dec_rv16_beqz,
+  output dec_rv16_bnez,
+
   output [`E203_RFIDX_WIDTH-1:0] dec_jalr_rs1idx,
   output [`E203_XLEN-1:0] dec_bjp_imm 
   );
@@ -359,6 +368,15 @@ module e203_exu_decode(
 
   // ===========================================================================
     // The Branch and system group of instructions will be handled by BJP
+
+  assign dec_rv32_beq = rv32_beq ;
+  assign dec_rv32_bne = rv32_bne ;
+  assign dec_rv32_blt = rv32_blt ;
+  assign dec_rv32_bgt = rv32_bgt ;
+  assign dec_rv32_bltu = rv32_bltu ;
+  assign dec_rv32_bgtu = rv32_bgtu ;
+  assign dec_rv16_beqz = rv16_beqz ;
+  assign dec_rv16_bnez = rv16_bnez ;
 
   assign dec_jal     = rv32_jal    | rv16_jal  | rv16_j;
   assign dec_jalr    = rv32_jalr   | rv16_jalr | rv16_jr;

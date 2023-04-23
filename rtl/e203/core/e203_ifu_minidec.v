@@ -52,6 +52,16 @@ module e203_ifu_minidec(
   output dec_jal,
   output dec_jalr,
   output dec_bxx,
+
+  output dec_rv32_beq, 
+  output dec_rv32_bne,
+  output dec_rv32_blt,
+  output dec_rv32_bgt,
+  output dec_rv32_bltu,
+  output dec_rv32_bgtu,
+  output dec_rv16_beqz,
+  output dec_rv16_bnez,
+
   output [`E203_RFIDX_WIDTH-1:0] dec_jalr_rs1idx,
   output [`E203_XLEN-1:0] dec_bjp_imm 
 
@@ -103,6 +113,15 @@ module e203_ifu_minidec(
   .dec_jal (dec_jal ),
   .dec_jalr(dec_jalr),
   .dec_bxx (dec_bxx ),
+
+  .dec_rv32_beq(dec_rv32_beq), 
+  .dec_rv32_bne(dec_rv32_bne),
+  .dec_rv32_blt(dec_rv32_blt),
+  .dec_rv32_bgt(dec_rv32_bgt),
+  .dec_rv32_bltu(dec_rv32_bltu),
+  .dec_rv32_bgtu(dec_rv32_bgtu),
+  .dec_rv16_beqz(dec_rv16_beqz),
+  .dec_rv16_bnez(dec_rv16_bnez),
 
   .dec_jalr_rs1idx(dec_jalr_rs1idx),
   .dec_bjp_imm    (dec_bjp_imm    )  

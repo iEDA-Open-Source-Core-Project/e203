@@ -60,7 +60,7 @@ module e203_ifu_litebpu(
   input  clk,
   input  rst_n
   );
-
+  //TODO: 添加Debug模块
 
   // BPU of E201 utilize very simple static branch prediction logics
   //   * JAL: The target address of JAL is calculated based on current PC value
