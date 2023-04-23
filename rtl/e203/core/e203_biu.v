@@ -821,17 +821,20 @@ module e203_biu(
                            `endif//}
                            } = splt_bus_icb_rsp_ready;
 
-  wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
+  // wire buf_icb_cmd_ppi = ppi_icb_enable & (buf_icb_cmd_addr[`E203_PPI_BASE_REGION] ==  ppi_region_indic[`E203_PPI_BASE_REGION]);
+  wire buf_icb_cmd_ppi = 1'b0; // disable ppi
   wire buf_icb_sel_ppi = buf_icb_cmd_ppi & (~buf_icb_cmd_ifu);
 
   wire buf_icb_cmd_clint = clint_icb_enable & (buf_icb_cmd_addr[`E203_CLINT_BASE_REGION] ==  clint_region_indic[`E203_CLINT_BASE_REGION]);
   wire buf_icb_sel_clint = buf_icb_cmd_clint & (~buf_icb_cmd_ifu);
 
-  wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
+  // wire buf_icb_cmd_plic = plic_icb_enable & (buf_icb_cmd_addr[`E203_PLIC_BASE_REGION] ==  plic_region_indic[`E203_PLIC_BASE_REGION]);
+  wire buf_icb_cmd_plic = 1'b0; // disable plic
   wire buf_icb_sel_plic = buf_icb_cmd_plic & (~buf_icb_cmd_ifu);
 
   `ifdef E203_HAS_FIO //{
-  wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
+  // wire buf_icb_cmd_fio = fio_icb_enable & (buf_icb_cmd_addr[`E203_FIO_BASE_REGION] ==  fio_region_indic[`E203_FIO_BASE_REGION]);
+  wire buf_icb_cmd_fio = 1'b0; // disable fio
   wire buf_icb_sel_fio = buf_icb_cmd_fio & (~buf_icb_cmd_ifu);
   `endif//}
 

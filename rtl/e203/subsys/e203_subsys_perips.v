@@ -1836,6 +1836,15 @@ apb_adv_timer #(
   wire expl_axi_bvalid;
   wire expl_axi_bready;
   wire [1:0] expl_axi_bresp;
+
+  wire expl_axi_arid;
+  wire expl_axi_awid;
+  wire expl_axi_rid;
+  wire expl_axi_bid;
+  assign expl_axi_arid = 1'b0;
+  assign expl_axi_awid = 1'b0;
+  // assign rid = 1'b0;
+  // assign bid = 1'b0;
    
 sirv_gnrl_icb2axi # (
   .AXI_FIFO_DP (2), // We just add ping-pong buffer here to avoid any potential timing loops
@@ -1868,6 +1877,7 @@ sirv_gnrl_icb2axi # (
     .o_axi_arburst   (expl_axi_arburst),
     .o_axi_arlen     (expl_axi_arlen  ),
     .o_axi_arsize    (expl_axi_arsize ),
+    .o_axi_arid      (expl_axi_arid  ),
                       
     .o_axi_awvalid   (expl_axi_awvalid),
     .o_axi_awready   (expl_axi_awready),
@@ -1878,12 +1888,14 @@ sirv_gnrl_icb2axi # (
     .o_axi_awburst   (expl_axi_awburst),
     .o_axi_awlen     (expl_axi_awlen  ),
     .o_axi_awsize    (expl_axi_awsize ),
+    .o_axi_awid      (expl_axi_awid  ),
                      
     .o_axi_rvalid    (expl_axi_rvalid ),
     .o_axi_rready    (expl_axi_rready ),
     .o_axi_rdata     (expl_axi_rdata  ),
     .o_axi_rresp     (expl_axi_rresp  ),
     .o_axi_rlast     (expl_axi_rlast  ),
+    .o_axi_rid       (expl_axi_rid  ),
                     
     .o_axi_wvalid    (expl_axi_wvalid ),
     .o_axi_wready    (expl_axi_wready ),
@@ -1894,54 +1906,55 @@ sirv_gnrl_icb2axi # (
     .o_axi_bvalid    (expl_axi_bvalid ),
     .o_axi_bready    (expl_axi_bready ),
     .o_axi_bresp     (expl_axi_bresp  ),
+    .o_axi_bid      (expl_axi_bid  ),
 
     .clk           (clk  ),
     .rst_n         (bus_rst_n) 
   );
 
-sirv_expl_axi_slv # (
-  .AW   (32),
-  .DW   (`E203_XLEN) 
-) u_perips_expl_axi_slv (
-    .axi_arvalid   (expl_axi_arvalid),
-    .axi_arready   (expl_axi_arready),
-    .axi_araddr    (expl_axi_araddr ),
-    .axi_arcache   (expl_axi_arcache),
-    .axi_arprot    (expl_axi_arprot ),
-    .axi_arlock    (expl_axi_arlock ),
-    .axi_arburst   (expl_axi_arburst),
-    .axi_arlen     (expl_axi_arlen  ),
-    .axi_arsize    (expl_axi_arsize ),
+// sirv_expl_axi_slv # (
+//   .AW   (32),
+//   .DW   (`E203_XLEN) 
+// ) u_perips_expl_axi_slv (
+//     .axi_arvalid   (expl_axi_arvalid),
+//     .axi_arready   (expl_axi_arready),
+//     .axi_araddr    (expl_axi_araddr ),
+//     .axi_arcache   (expl_axi_arcache),
+//     .axi_arprot    (expl_axi_arprot ),
+//     .axi_arlock    (expl_axi_arlock ),
+//     .axi_arburst   (expl_axi_arburst),
+//     .axi_arlen     (expl_axi_arlen  ),
+//     .axi_arsize    (expl_axi_arsize ),
      
-    .axi_awvalid   (expl_axi_awvalid),
-    .axi_awready   (expl_axi_awready),
-    .axi_awaddr    (expl_axi_awaddr ),
-    .axi_awcache   (expl_axi_awcache),
-    .axi_awprot    (expl_axi_awprot ),
-    .axi_awlock    (expl_axi_awlock ),
-    .axi_awburst   (expl_axi_awburst),
-    .axi_awlen     (expl_axi_awlen  ),
-    .axi_awsize    (expl_axi_awsize ),
+//     .axi_awvalid   (expl_axi_awvalid),
+//     .axi_awready   (expl_axi_awready),
+//     .axi_awaddr    (expl_axi_awaddr ),
+//     .axi_awcache   (expl_axi_awcache),
+//     .axi_awprot    (expl_axi_awprot ),
+//     .axi_awlock    (expl_axi_awlock ),
+//     .axi_awburst   (expl_axi_awburst),
+//     .axi_awlen     (expl_axi_awlen  ),
+//     .axi_awsize    (expl_axi_awsize ),
     
-    .axi_rvalid    (expl_axi_rvalid ),
-    .axi_rready    (expl_axi_rready ),
-    .axi_rdata     (expl_axi_rdata  ),
-    .axi_rresp     (expl_axi_rresp  ),
-    .axi_rlast     (expl_axi_rlast  ),
+//     .axi_rvalid    (expl_axi_rvalid ),
+//     .axi_rready    (expl_axi_rready ),
+//     .axi_rdata     (expl_axi_rdata  ),
+//     .axi_rresp     (expl_axi_rresp  ),
+//     .axi_rlast     (expl_axi_rlast  ),
    
-    .axi_wvalid    (expl_axi_wvalid ),
-    .axi_wready    (expl_axi_wready ),
-    .axi_wdata     (expl_axi_wdata  ),
-    .axi_wstrb     (expl_axi_wstrb  ),
-    .axi_wlast     (expl_axi_wlast  ),
+//     .axi_wvalid    (expl_axi_wvalid ),
+//     .axi_wready    (expl_axi_wready ),
+//     .axi_wdata     (expl_axi_wdata  ),
+//     .axi_wstrb     (expl_axi_wstrb  ),
+//     .axi_wlast     (expl_axi_wlast  ),
   
-    .axi_bvalid    (expl_axi_bvalid ),
-    .axi_bready    (expl_axi_bready ),
-    .axi_bresp     (expl_axi_bresp  ),
+//     .axi_bvalid    (expl_axi_bvalid ),
+//     .axi_bready    (expl_axi_bready ),
+//     .axi_bresp     (expl_axi_bresp  ),
 
-    .clk           (clk  ),
-    .rst_n         (rst_n) 
-  );
+//     .clk           (clk  ),
+//     .rst_n         (rst_n) 
+//   );
 
 
 

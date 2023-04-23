@@ -228,7 +228,34 @@
   `define E203_HAS_DTCM_EXTITF
 `endif//}
 
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+/////// AXI relevant macro
+//
+`ifdef E203_CFG_HAS_AXI//{
+  `define E203_HAS_AXI 1
+  // `define E203_AXI_ADDR_WIDTH  `E203_CFG_AXI_ADDR_WIDTH
+  `define E203_AXI_ADDR_WIDTH  32
+  // The ITCM size is 2^addr_width bytes, and ITCM is 64bits wide (8 bytes)
+  //  so the DP is 2^addr_wdith/8
+  //  so the AW is addr_wdith - 3
+  `define E203_AXI_RAM_DP      (1<<(`E203_CFG_AXI_ADDR_WIDTH-3))
+  `define E203_AXI_RAM_AW          (`E203_CFG_AXI_ADDR_WIDTH-3)
+  `define E203_AXI_BASE_REGION  `E203_ADDR_SIZE-1:`E203_AXI_ADDR_WIDTH
 
+  `define E203_CFG_AXI_DATA_WIDTH_IS_64
+  `ifdef E203_CFG_AXI_DATA_WIDTH_IS_64
+    `define E203_AXI_DATA_WIDTH_IS_64
+    `define E203_AXI_DATA_WIDTH  64
+    `define E203_AXI_WMSK_WIDTH  8
+
+    `define E203_AXI_RAM_ECC_DW  8
+    `define E203_AXI_RAM_ECC_MW  1
+  `endif
+
+  `define E203_HAS_ITCM_EXTITF
+`endif//}
 
 
 

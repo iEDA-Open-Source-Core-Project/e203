@@ -44,14 +44,15 @@ module e203_exu_regfile(
 
   wire [`E203_XLEN-1:0] rf_r [`E203_RFREG_NUM-1:0];
   wire [`E203_RFREG_NUM-1:0] rf_wen;
-  
+
+/*  
   `ifdef E203_REGFILE_LATCH_BASED //{
   // Use DFF to buffer the write-port
   wire [`E203_XLEN-1:0] wbck_dest_dat_r;
   sirv_gnrl_dffl #(`E203_XLEN) wbck_dat_dffl (wbck_dest_wen, wbck_dest_dat, wbck_dest_dat_r, clk);
   wire [`E203_RFREG_NUM-1:0] clk_rf_ltch;
   `endif//}
-
+*/
   
   genvar i;
   generate //{
@@ -62,24 +63,24 @@ module e203_exu_regfile(
             // x0 cannot be wrote since it is constant-zeros
             assign rf_wen[i] = 1'b0;
             assign rf_r[i] = `E203_XLEN'b0;
-          `ifdef E203_REGFILE_LATCH_BASED //{
-            assign clk_rf_ltch[i] = 1'b0;
-          `endif//}
+          // `ifdef E203_REGFILE_LATCH_BASED //{
+            // assign clk_rf_ltch[i] = 1'b0;
+          // `endif//}
         end
         else begin: rfno0
             assign rf_wen[i] = wbck_dest_wen & (wbck_dest_idx == i) ;
-          `ifdef E203_REGFILE_LATCH_BASED //{
-            e203_clkgate u_e203_clkgate(
-              .clk_in  (clk  ),
-              .test_mode(test_mode),
-              .clock_en(rf_wen[i]),
-              .clk_out (clk_rf_ltch[i])
-            );
+          // `ifdef E203_REGFILE_LATCH_BASED //{
+            // e203_clkgate u_e203_clkgate(
+              // .clk_in  (clk  ),
+              // .test_mode(test_mode),
+              // .clock_en(rf_wen[i]),
+              // .clk_out (clk_rf_ltch[i])
+            // );
                 //from write-enable to clk_rf_ltch to rf_ltch
-            sirv_gnrl_ltch #(`E203_XLEN) rf_ltch (clk_rf_ltch[i], wbck_dest_dat_r, rf_r[i]);
-          `else//}{
+            // sirv_gnrl_ltch #(`E203_XLEN) rf_ltch (clk_rf_ltch[i], wbck_dest_dat_r, rf_r[i]);
+          // `else//}{
             sirv_gnrl_dffl #(`E203_XLEN) rf_dffl (rf_wen[i], wbck_dest_dat, rf_r[i], clk);
-          `endif//}
+          // `endif//}
         end
   
       end//}

@@ -9,6 +9,10 @@ make clean
 
 make install
 
+iverilog-soc
+------------
+make ysyx IDEA=`your iverilog-soc/cpu pwd`
+
 Compile
 -------
 make compile SIM=iverlog **or** make compile SIM=VCS

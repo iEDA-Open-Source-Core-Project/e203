@@ -84,7 +84,49 @@ module e203_soc_top(
 
       // PMU output is just output without enable
   output io_pads_aon_pmu_padrst_o_oval,
-  output io_pads_aon_pmu_vddpaden_o_oval 
+  output io_pads_aon_pmu_vddpaden_o_oval,
+
+//////////////////////////////////////////////////////////
+/// AXI 
+  output axi_arvalid,
+  input  axi_arready,
+  output [32-1:0] axi_araddr,
+  output [0:0] axi_arcache,
+  output [0:0] axi_arprot,
+  output [0:0] axi_arlock,
+  output [1:0] axi_arburst,
+  output [7:0] axi_arlen,
+  output [2:0] axi_arsize,
+  output [3:0] axi_arid,
+
+  output axi_awvalid,
+  input  axi_awready,
+  output [32-1:0] axi_awaddr,
+  output [0:0] axi_awcache,
+  output [0:0] axi_awprot,
+  output [0:0] axi_awlock,
+  output [1:0] axi_awburst,
+  output [7:0] axi_awlen,
+  output [2:0] axi_awsize,
+  output  [3:0]     axi_awid,
+
+  input  axi_rvalid,
+  output axi_rready,
+  input  [64-1:0] axi_rdata,
+  input  [1:0] axi_rresp,
+  input  axi_rlast,
+  input  [3:0]axi_rid,
+
+  output axi_wvalid,
+  input  axi_wready,
+  output [64-1:0] axi_wdata,
+  output [(64/8)-1:0] axi_wstrb,
+  output axi_wlast,
+
+  input  axi_bvalid,
+  output axi_bready,
+  input  [1:0] axi_bresp,
+  input  [3:0]axi_bid
 );
 
 
@@ -277,9 +319,47 @@ module e203_soc_top(
 
     .io_pads_dbgmode1_n_i_ival       (io_pads_dbgmode1_n_i_ival),
 
-    .io_pads_dbgmode2_n_i_ival       (io_pads_dbgmode2_n_i_ival) 
+    .io_pads_dbgmode2_n_i_ival       (io_pads_dbgmode2_n_i_ival),
 
-
+    .axi_arvalid   (axi_arvalid),
+    .axi_arready   (axi_arready),
+    .axi_araddr    (axi_araddr ),
+    .axi_arcache   (axi_arcache),
+    .axi_arprot    (axi_arprot ),
+    .axi_arlock    (axi_arlock ),
+    .axi_arburst   (axi_arburst),
+    .axi_arlen     (axi_arlen  ),
+    .axi_arsize    (axi_arsize ),
+    .axi_arid      (axi_arid),
+          
+    .axi_awvalid   (axi_awvalid),
+    .axi_awready   (axi_awready),
+    .axi_awaddr    (axi_awaddr ),
+    .axi_awcache   (axi_awcache),
+    .axi_awprot    (axi_awprot ),
+    .axi_awlock    (axi_awlock ),
+    .axi_awburst   (axi_awburst),
+    .axi_awlen     (axi_awlen  ),
+    .axi_awsize    (axi_awsize ),
+    .axi_awid      (axi_awid),
+        
+    .axi_rvalid    (axi_rvalid ),
+    .axi_rready    (axi_rready ),
+    .axi_rdata     (axi_rdata  ),
+    .axi_rresp     (axi_rresp  ),
+    .axi_rlast     (axi_rlast  ),
+    .axi_rid       (axi_rid),
+        
+    .axi_wvalid    (axi_wvalid ),
+    .axi_wready    (axi_wready ),
+    .axi_wdata     (axi_wdata  ),
+    .axi_wstrb     (axi_wstrb  ),
+    .axi_wlast     (axi_wlast  ),
+      
+    .axi_bvalid    (axi_bvalid ),
+    .axi_bready    (axi_bready ),
+    .axi_bresp     (axi_bresp  ),
+    .axi_bid       (axi_bid)
   );
 
 

@@ -9,6 +9,7 @@ DUMPWAVE     := 1
 
 CORE        := e203
 CFG         := ${CORE}_config
+IEDA := iverilog-soc
 
 
 CORE_NAME = $(shell echo $(CORE) | tr a-z A-Z)
@@ -17,17 +18,27 @@ core_name = $(shell echo $(CORE) | tr A-Z a-z)
 all: run_test
 
 install: 
-	mkdir -p ${SIM_DIR}/install/tb
-	cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
-	cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+	@mkdir -p ${SIM_DIR}/install/tb
+	@mkdir -p ${SIM_DIR}/install/rtl
+#	@cp ${SIM_DIR}/../tb/*.v ${SIM_DIR}/install/tb -rf
+#	@cp ${SIM_DIR}/../rtl/${core_name} ${SIM_DIR}/install/rtl -rf
+#	@find ${SIM_DIR}/install/rtl/core ! -name 'config.v' ! -name 'e203_defines.v' -type f -exec rm -f {} +
+	@python3 ./mergefile_nice.py
 
 ${RUN_DIR}:
-	mkdir -p ${RUN_DIR}
-	rm -f ${RUN_DIR}/Makefile
-	ln -s ${SIM_DIR}/bin/run.makefile ${RUN_DIR}/Makefile
+	@mkdir -p ${RUN_DIR}
+	@rm -f ${RUN_DIR}/Makefile
+	@ln -s ${SIM_DIR}/bin/run.makefile ${RUN_DIR}/Makefile
 
 compile: ${RUN_DIR}
+	@echo '---- start vsim compile ----'
 	make compile RUN_DIR=${RUN_DIR} SIM_TOOL=${SIM} -C ${RUN_DIR}
+	@echo '---- end vsim compile ----'
+
+ysyx: install
+	@mkdir -p ./build
+	@cat ./install/rtl/e203_soc_top.v ../ysyx/ysyx_e203.v > ./build/ysyx_e203.v
+	@cp ./build/ysyx_e203.v ~/Documents/Pro/Projects/$(IEDA)/cpu
 
 wave: ${RUN_DIR}
 	make wave TESTCASE=${TESTCASE} SIM_TOOL=${SIM} RUN_DIR=${RUN_DIR} -C ${RUN_DIR}
@@ -56,8 +67,9 @@ regress_collect:
 regress: regress_prepare regress_run regress_collect 
 
 clean:
-	rm -rf run
-	rm -rf install
+	@rm -rf run
+	@rm -rf install
+	@rm -rf ./*.v
 
-.PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect 
+.PHONY: compile run install clean all run_test regress regress_prepare regress_run regress_collect ysyx
 

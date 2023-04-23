@@ -57,12 +57,19 @@
 `define E203_CFG_HAS_DTCM
     // 16KB have address 14 wide
     //   The depth is 16*1024*8/32=4096
+`define E203_CFG_DTCM_ADDR_WIDTH 16
 
     // 256KB have address 18 wide
     //   The depth is 256*1024*8/32=65536
 
 //    // 1MB have address 20bits wide
 //    //   The depth is 1024*1024*8/32=262144
+
+/////////////////////////////////////////////////////////////////
+`define E203_CFG_HAS_AXI
+    // 64KB have address 16bits wide
+    //   The depth is 64*1024*8/64=8192
+`define E203_CFG_AXI_ADDR_WIDTH  16
 
 /////////////////////////////////////////////////////////////////
 //`define E203_CFG_REGFILE_LATCH_BASED
@@ -97,4 +104,4 @@
 `define E203_CFG_HAS_NICE
 `define E203_CFG_SUPPORT_SHARE_MULDIV
 `define E203_CFG_SUPPORT_AMO
-`define E203_CFG_DTCM_ADDR_WIDTH 16
+

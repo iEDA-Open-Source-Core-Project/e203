@@ -1036,6 +1036,7 @@ module sirv_gnrl_icb2axi # (
   output [1:0] o_axi_arburst,
   output [3:0] o_axi_arlen,
   output [2:0] o_axi_arsize,
+  output       o_axi_arid,
 
   output o_axi_awvalid,
   input  o_axi_awready,
@@ -1046,12 +1047,14 @@ module sirv_gnrl_icb2axi # (
   output [1:0] o_axi_awburst,
   output [3:0] o_axi_awlen,
   output [2:0] o_axi_awsize,
+  output       o_axi_awid,
 
   input  o_axi_rvalid,
   output o_axi_rready,
   input  [DW-1:0] o_axi_rdata,
   input  [1:0] o_axi_rresp,
   input  o_axi_rlast,
+  input  o_axi_rid,
 
   output o_axi_wvalid,
   input  o_axi_wready,
@@ -1062,6 +1065,7 @@ module sirv_gnrl_icb2axi # (
   input  o_axi_bvalid,
   output o_axi_bready,
   input  [1:0] o_axi_bresp,
+  input  o_axi_bid,
 
   input  clk,  
   input  rst_n
