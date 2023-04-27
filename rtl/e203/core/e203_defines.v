@@ -738,7 +738,8 @@
     // support hit-under-miss (out of order return), then
     // we can enlarge this number to 2 or 4
     //
-  `ifdef E203_HAS_DCACHE //{
+    //TODO: DCACHE
+  `ifdef E203_HAS_DCACHE //{  
     //`define E203_BIU_OUTS_NUM 2 
   `else//}{
     `define E203_BIU_OUTS_NUM `E203_LSU_OUTS_NUM 
