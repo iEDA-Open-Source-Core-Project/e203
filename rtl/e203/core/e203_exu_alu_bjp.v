@@ -76,7 +76,7 @@ module e203_exu_alu_bjp(
   output bjp_req_alu_cmp_gtu,
   output bjp_req_alu_add,
 
-  input  bjp_req_alu_cmp_res,
+  input  bjp_req_alu_cmp_res,                          // ???
   input  [`E203_XLEN-1:0] bjp_req_alu_add_res,
 
   input  clk,
@@ -89,7 +89,7 @@ module e203_exu_alu_bjp(
   wire fencei = bjp_i_info [`E203_DECINFO_BJP_FENCEI ]; 
   wire bxx   = bjp_i_info [`E203_DECINFO_BJP_BXX ]; 
   wire jump  = bjp_i_info [`E203_DECINFO_BJP_JUMP ]; 
-  wire rv32  = bjp_i_info [`E203_DECINFO_RV32]; 
+  wire rv32  = bjp_i_info [`E203_DECINFO_RV32];         // ????
 
   wire wbck_link = jump;
 

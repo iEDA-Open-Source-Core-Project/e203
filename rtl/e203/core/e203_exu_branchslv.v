@@ -46,7 +46,7 @@ module e203_exu_branchslv(
   input  [`E203_PC_SIZE-1:0] csr_dpc_r,
 
 
-  input  nonalu_excpirq_flush_req_raw,
+  input  nonalu_excpirq_flush_req_raw,  //????
   input  brchmis_flush_ack,
   output brchmis_flush_req,
   output [`E203_PC_SIZE-1:0] brchmis_flush_add_op1,  
@@ -92,6 +92,54 @@ module e203_exu_branchslv(
       );
 
   assign brchmis_flush_req_pre = cmt_i_valid & brchmis_need_flush;
+
+// Branach Debug
+  reg [31:0] bxx = 0;
+  reg [31:0] bxxmis = 0;
+  
+  // assign bxx = cmt_i_valid & cmt_i_bjp & (!(cmt_i_bjp_prdt ^ cmt_i_bjp_rslv)) ? bxx + 1'b1 : bxx;
+  // assign bxxmis = cmt_i_valid & cmt_i_bjp & (cmt_i_bjp_prdt ^ cmt_i_bjp_rslv) ? bxxmis + 1'b1 : bxxmis;
+
+  always@(posedge clk) begin
+    if(!rst_n) begin
+      bxx <= 32'b0;
+    end 
+    else if(cmt_i_valid & cmt_i_bjp & (!(cmt_i_bjp_prdt ^ cmt_i_bjp_rslv))) begin
+      bxx <= bxx + 1'b1;
+    end
+  end
+
+  always@(posedge clk) begin
+    if(!rst_n) begin
+      bxxmis <= 32'b0;
+    end 
+    else if(cmt_i_valid & cmt_i_bjp & (cmt_i_bjp_prdt ^ cmt_i_bjp_rslv)) begin
+      bxxmis <= bxxmis + 1'b1;
+    end
+  end
+
+  //define the time counter
+  reg [32:0]      cnt = 0;
+  reg             impulse;
+  parameter       SET_TIME = 32'd32;
+  // parameter       SET_TIME = 32'd256;
+  always@(posedge clk) begin
+      if (cnt == SET_TIME) begin
+          cnt <= 32'd0;
+          impulse <= 1'd1;
+      end
+      else begin
+          cnt <= cnt + 1'd1;
+          impulse <= 1'd0;
+      end
+  end
+
+  always @(*) begin
+    if(impulse == 1'b1) begin
+      $display("bxx:%d\tbxxmis:%d\tbxxall:%d", bxx, bxxmis, bxx + bxxmis);
+    end
+  end
+
 
   // * If it is a DRET instruction, the new target PC is DPC register
   // * If it is a RET instruction, the new target PC is EPC register
