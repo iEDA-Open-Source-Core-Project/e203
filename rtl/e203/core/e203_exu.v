@@ -242,6 +242,7 @@ module e203_exu(
   wire dec_misalgn;
   wire dec_buserr;
   wire dec_ilegl;
+  wire dec_bxx;
 
   `ifdef E203_HAS_NICE//{
   wire nice_cmt_off_ilgl;
@@ -264,7 +265,7 @@ module e203_exu(
     .dec_bjp   (),
     .dec_jal   (),
     .dec_jalr  (),
-    .dec_bxx   (),
+    .dec_bxx   (dec_bxx),
     .dec_jalr_rs1idx(),
     .dec_bjp_imm(),
 
@@ -869,6 +870,7 @@ module e203_exu(
   `ifdef E203_TIMING_BOOST//}
     .pipe_flush_pc           (pipe_flush_pc),  
   `endif//}
+    .dec_bxx  (dec_bxx),
 
     .clk                     (clk          ),
     .rst_n                   (rst_n        ) 

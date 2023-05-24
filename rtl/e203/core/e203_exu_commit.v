@@ -143,6 +143,7 @@ module e203_exu_commit(
   `ifdef E203_TIMING_BOOST//}
   output  [`E203_PC_SIZE-1:0] pipe_flush_pc,  
   `endif//}
+  input  dec_bxx,
 
   input  clk,
   input  rst_n
@@ -190,6 +191,7 @@ module e203_exu_commit(
   `ifdef E203_TIMING_BOOST//}
     .brchmis_flush_pc        (alu_brchmis_flush_pc),  
   `endif//}
+    .dec_bxx(dec_bxx),
 
     .clk   (clk  ),
     .rst_n (rst_n)

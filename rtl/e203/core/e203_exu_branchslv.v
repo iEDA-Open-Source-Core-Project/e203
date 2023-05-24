@@ -58,6 +58,7 @@ module e203_exu_branchslv(
   output  cmt_mret_ena,
   output  cmt_dret_ena,
   output  cmt_fencei_ena,
+  input   dec_bxx,
 
   input  clk,
   input  rst_n
@@ -104,7 +105,8 @@ module e203_exu_branchslv(
     if(!rst_n) begin
       bxx <= 32'b0;
     end 
-    else if(cmt_i_valid & cmt_i_bjp & (!(cmt_i_bjp_prdt ^ cmt_i_bjp_rslv))) begin
+    // else if(cmt_i_valid & cmt_i_bjp & (!(cmt_i_bjp_prdt ^ cmt_i_bjp_rslv))) begin
+    else if(cmt_i_valid & dec_bxx & (!(cmt_i_bjp_prdt ^ cmt_i_bjp_rslv))) begin
       bxx <= bxx + 1'b1;
     end
   end
@@ -113,7 +115,8 @@ module e203_exu_branchslv(
     if(!rst_n) begin
       bxxmis <= 32'b0;
     end 
-    else if(cmt_i_valid & cmt_i_bjp & (cmt_i_bjp_prdt ^ cmt_i_bjp_rslv)) begin
+    // else if(cmt_i_valid & cmt_i_bjp & (cmt_i_bjp_prdt ^ cmt_i_bjp_rslv)) begin
+    else if(cmt_i_valid & dec_bxx & (cmt_i_bjp_prdt ^ cmt_i_bjp_rslv)) begin
       bxxmis <= bxxmis + 1'b1;
     end
   end
